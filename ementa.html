@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#7a1f2b">
+<title>Ementa · Solar Beirão Marisqueira</title>
+<meta name="description" content="Ementa digital do Solar Beirão Marisqueira (Cacilhas) em 8 línguas.">
+<link rel="canonical" href="https://solarbeirao-cacilhas.vercel.app/ementa.html">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Solar Beirão Marisqueira · Ementa">
+<meta property="og:image" content="https://solarbeirao-cacilhas.vercel.app/og.jpg">
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/playfair-display-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/dm-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://dnwijjgefcxurdffabyq.supabase.co" crossorigin>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="em-body">
+<header class="em-head">
+  <div class="em-bar">
+    <a class="em-back" id="emBack" href="./"><img src="assets/img/logo-200.webp" alt="" width="36" height="36"><span><b id="emName">Solar Beirão</b><small id="emBackTxt">Voltar</small></span></a>
+    <button class="lang-btn" id="langBtn" type="button" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9S14.6 18.4 12 21M12 3C9.4 5.6 8.2 8.6 8.2 12s1.2 6.4 3.8 9"/></svg><span id="langCode">PT</span></button>
+  </div>
+  <div class="em-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="emSearch" type="search" autocomplete="off" enterkeyhint="search"></div>
+  <nav class="em-tabs" id="emTabs" aria-label="Categorias"></nav>
+</header>
+
+<main class="em-main">
+  <div class="em-intro">
+    <p class="kicker" id="emKicker">Ementa digital</p>
+    <h1 class="h2" id="emTitle">Os sabores do Solar Beirão</h1>
+  </div>
+  <section class="pro-hoje" id="hoje" hidden aria-live="polite"></section>
+  <div id="emList"></div>
+  <p class="em-empty" id="emEmpty" hidden></p>
+  <p class="em-foot" id="emFoot"></p>
+</main>
+
+<nav class="dock show em-dock" id="emDock" aria-label="Ações"></nav>
+
+<div class="sheet" id="langSheet" role="dialog" aria-modal="true" aria-labelledby="langTitle" hidden>
+  <div class="sheet-card">
+    <img src="assets/img/logo-200.webp" alt="" width="56" height="56">
+    <h2 id="langTitle">Escolha o idioma</h2>
+    <p id="langSub"></p>
+    <div class="lang-grid" id="langGrid"></div>
+  </div>
+</div>
+<aside class="review-panel" id="reviewPanel" hidden></aside>
+
+<script src="config.js"></script>
+<script src="i18n.js"></script>
+<script src="pro.js" data-engine="menu.js"></script>
+</body>
+</html>

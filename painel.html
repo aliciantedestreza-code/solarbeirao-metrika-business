@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#7a1f2b">
+<title>MÉTRIKA Business · Solar Beirão</title>
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Painel Solar">
+<link rel="preconnect" href="https://dnwijjgefcxurdffabyq.supabase.co" crossorigin>
+<style>
+@font-face{font-family:"DM Sans";src:url(assets/fonts/dm-sans-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"DM Sans";src:url(assets/fonts/dm-sans-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"DM Sans";src:url(assets/fonts/dm-sans-latin-700-normal.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Playfair Display";src:url(assets/fonts/playfair-display-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
+:root{--navy:#7a1f2b;--navy-2:#93303d;--deep:#3a0f16;--gold:#c9a25e;--gold-d:#9c7434;--sand:#f8f4ee;--card:#fff;--ink:#2e1a1d;--muted:#6e5c5e;--line:rgba(122,31,43,.14);--ok:#1f9d55;--bad:#b3261e;--sans:"DM Sans",system-ui,-apple-system,sans-serif;--serif:"Playfair Display",Georgia,serif;--r:18px;--shadow:0 8px 26px rgba(58,15,22,.10)}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--sand);color:var(--ink);font:400 16px/1.45 var(--sans);min-height:100svh}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--navy)}
+[hidden]{display:none!important}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+/* Login */
+.login{min-height:100svh;display:grid;place-items:center;padding:24px 16px;background:radial-gradient(120% 70% at 50% 0%,var(--navy-2) 0%,var(--navy) 55%,var(--deep) 100%)}
+.login-card{width:100%;max-width:400px;background:#fff;border-radius:24px;padding:28px 22px 24px;box-shadow:0 20px 60px rgba(0,0,0,.35);text-align:center}
+.login-card img{width:72px;height:72px}
+.login-card h1{margin:10px 0 4px;font:500 28px/1.15 var(--serif);color:var(--navy)}
+.login-card p{margin:0 0 20px;color:var(--muted);font-size:15px}
+.pw{position:relative}
+.pw input{padding-right:96px}
+.pw button{position:absolute;right:4px;top:50%;transform:translateY(-50%);min-height:44px;border:0;background:none;color:var(--navy);font-weight:700;font-size:14px;padding:0 12px}
+.brandline{margin-top:18px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.back-id{display:inline-flex;align-items:center;min-height:44px;margin-top:8px;font-size:14px;font-weight:700;color:var(--navy);text-decoration:none}
+/* Campos */
+.field{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fff;font-size:16px;outline:none;transition:border-color .15s,box-shadow .15s}
+.field:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(122,31,43,.14)}
+textarea.field{resize:vertical;min-height:52px}
+label.lb{display:block;font-size:13px;font-weight:700;color:var(--muted);margin:0 0 6px;letter-spacing:.02em}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 20px;border-radius:999px;border:0;font-weight:700;font-size:16px;cursor:pointer;text-decoration:none;transition:transform .1s,opacity .15s}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{opacity:.5;pointer-events:none}
+.btn-main{background:var(--navy);color:#fff;width:100%}
+.btn-gold{background:var(--gold);color:#1b1407}
+.btn-line{background:#fff;color:var(--navy);border:1.5px solid var(--line)}
+.btn-danger{background:#fff;color:var(--bad);border:1.5px solid rgba(179,38,30,.3)}
+.btn-sm{min-height:44px;padding:0 14px;font-size:14px}
+.err{color:var(--bad);font-size:14px;margin:10px 0 0;font-weight:500}
+/* App */
+.top{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;padding:calc(env(safe-area-inset-top) + 10px) 0 12px}
+.top .wrap{display:flex;align-items:center;gap:12px}
+.top img{width:40px;height:40px;border-radius:50%;background:#fff}
+.top b{display:block;font:500 20px/1.15 var(--serif)}
+.top small{display:block;font-size:12px;opacity:.85;letter-spacing:.04em}
+.sw2{margin-left:auto;display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25)}.sw2 a,.sw2 span{display:inline-flex;align-items:center;min-height:40px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;text-decoration:none}.sw2 .on{background:#fff;color:var(--navy)}
+main{padding:18px 0 170px}
+h2.h{font:500 26px/1.15 var(--serif);color:var(--navy);margin:6px 0 4px}
+.sub{color:var(--muted);margin:0 0 14px;font-size:15px}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;font-size:14px;font-weight:700;background:#fff;box-shadow:var(--shadow)}
+.pill i{width:9px;height:9px;border-radius:50%;background:var(--muted)}
+.pill.on i{background:var(--ok)}.pill.warn i{background:#e0a100}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin:12px 0}
+.item-top{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.item-top select{flex:1}
+.x{flex:none;width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);background:#fff;color:var(--muted);font-size:20px;line-height:1;cursor:pointer}
+.grid2{display:grid;grid-template-columns:1fr 130px;gap:10px;margin-top:10px}
+.euro{position:relative}.euro input{padding-right:34px;text-align:right;font-variant-numeric:tabular-nums}.euro:after{content:"€";position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:700}
+.tog{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:0 4px;cursor:pointer;user-select:none}
+.tog span{font-weight:500}
+.sw{position:relative;flex:none;width:52px;height:32px;border-radius:999px;background:#ddd3cf;transition:background .15s}
+.sw:after{content:"";position:absolute;left:3px;top:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .15s}
+input:checked+.sw{background:var(--ok)}input:checked+.sw.red{background:var(--bad)}
+input:checked+.sw:after{transform:translateX(20px)}
+.tog input{position:absolute;opacity:0;pointer-events:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
+.chip{min-height:44px;border:1.5px dashed rgba(122,31,43,.35);background:#fff;color:var(--navy);border-radius:999px;padding:0 14px;font-weight:700;font-size:14px;cursor:pointer}
+.banner{background:#fff6e0;border:1px solid #f0d890;border-radius:14px;padding:12px 14px;font-size:15px;margin:12px 0}
+.empty{text-align:center;color:var(--muted);padding:22px 10px}
+/* Ementa */
+.search{position:sticky;top:calc(env(safe-area-inset-top) + 64px);z-index:10;background:var(--sand);padding:8px 0 10px}
+details.cat{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);margin:10px 0;overflow:hidden}
+details.cat summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:56px;padding:12px 16px;font:500 19px/1.2 var(--serif);color:var(--navy);cursor:pointer}
+details.cat summary::-webkit-details-marker{display:none}
+details.cat summary small{font:700 13px var(--sans);color:var(--muted)}
+details.cat summary em{font-style:normal;font:700 12px var(--sans);color:#fff;background:var(--gold-d);border-radius:999px;padding:3px 8px;margin-left:8px}
+.row{padding:12px 16px;border-top:1px solid var(--line)}
+.row.chg{background:#fff8f0}
+.row.off .rn{color:var(--muted);text-decoration:line-through}
+.rn{font-weight:500;line-height:1.35}
+.rb{font-size:13px;color:var(--muted);margin-top:2px}
+.rc{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.rc .euro{width:120px}
+.rc .field{padding:10px 12px;font-size:16px;min-height:44px}.rc .euro input{padding-right:32px}
+.tbtn{min-height:44px;padding:0 12px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-weight:700;font-size:14px;color:var(--ink);cursor:pointer}
+.tbtn[aria-pressed="true"].sold{background:var(--bad);border-color:var(--bad);color:#fff}
+.tbtn[aria-pressed="true"].hide{background:var(--ink);border-color:var(--ink);color:#fff}
+.addrow{padding:12px 16px 16px;border-top:1px solid var(--line)}
+.addrow .grid2{margin-top:0}
+.new-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--gold);color:#1b1407;border-radius:999px;padding:2px 8px;margin-right:6px;vertical-align:middle}
+.grp-h{margin:18px 4px 4px;font:700 12px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--gold-d)}
+/* Barra de publicar */
+.bar{position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));z-index:30;padding:10px 16px;pointer-events:none}
+.bar .inner{max-width:640px;margin:0 auto;background:#fff;border-radius:20px;box-shadow:0 10px 36px rgba(58,15,22,.25);padding:10px;display:flex;gap:10px;align-items:center;pointer-events:auto}
+.bar .inner span{flex:1;font-size:14px;font-weight:500;padding-left:6px;line-height:1.25}
+.bar .btn{width:auto;min-width:150px}
+/* Navegação */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.nav .wrap{display:grid;grid-template-columns:repeat(3,1fr)}
+.nav button{border:0;background:none;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer}
+.nav button svg{width:24px;height:24px}
+.nav button[aria-current="true"]{color:var(--navy)}
+.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 74px);transform:translate(-50%,-20px);opacity:0;z-index:60;background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;font-weight:500;font-size:15px;max-width:calc(100% - 32px);text-align:center;transition:all .2s;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}.toast.ok{background:var(--ok)}.toast.bad{background:var(--bad)}
+.list a.li{display:flex;justify-content:space-between;align-items:center;min-height:48px;padding:0 4px;border-top:1px solid var(--line);text-decoration:none;font-weight:500;color:var(--ink)}
+.list a.li:first-child{border-top:0}
+.mt{margin-top:12px}
+.loading{min-height:100svh;display:grid;place-items:center;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="loading" id="vLoad">A carregar…</div>
+
+<!-- LOGIN -->
+<section class="login" id="vLogin" hidden>
+  <form class="login-card" id="loginForm" novalidate>
+    <img src="assets/img/logo-200.webp" alt="" width="72" height="72">
+    <h1>MÉTRIKA Business</h1>
+    <p>Solar Beirão · Cacilhas</p>
+    <label class="lb" for="pass" style="text-align:left">Password</label>
+    <div class="pw"><input class="field" id="pass" type="password" autocomplete="current-password" required><button type="button" id="pwShow">Mostrar</button></div>
+    <p class="err" id="loginErr" role="alert" hidden></p>
+    <button class="btn btn-main mt" id="loginBtn" type="submit">Entrar</button>
+    <a class="back-id" href="./">← Voltar ao MÉTRIKA ID</a>
+    <div class="brandline">MÉTRIKA ID Pro</div>
+  </form>
+</section>
+
+<!-- APP -->
+<div id="vApp" hidden>
+  <header class="top"><div class="wrap">
+    <img src="assets/img/logo-200.webp" alt="">
+    <div><b>Solar Beirão</b><small>MÉTRIKA Business</small></div>
+    <nav class="sw2" aria-label="Alternar"><a href="./">ID</a><span class="on">Business</span></nav>
+  </div></header>
+
+  <main>
+    <!-- HOJE -->
+    <section class="wrap" id="tHoje">
+      <h2 class="h" id="hojeData">Hoje</h2>
+      <p class="sub">O que puseres aqui aparece logo no topo do QR e da ementa.</p>
+      <span class="pill" id="hojePill"><i></i><span></span></span>
+      <div class="banner" id="hojeBanner" hidden></div>
+      <div id="hojeItens"></div>
+      <div class="card">
+        <label class="lb">Acrescentar</label>
+        <div class="chips" id="hojeChips"></div>
+      </div>
+      <div class="card">
+        <label class="lb" for="hojeNota">Nota para os clientes (opcional)</label>
+        <textarea class="field" id="hojeNota" rows="2" maxlength="240" placeholder="Ex.: Hoje temos percebes e sapateira fresca."></textarea>
+        <label class="tog mt"><span>Mostrar todos os dias até eu mudar</span><input type="checkbox" id="hojeFixo"><i class="sw"></i></label>
+      </div>
+      <button class="btn btn-danger btn-sm" id="hojeLimpar" type="button">Tirar o dia do ar</button>
+      <datalist id="recentes"></datalist>
+    </section>
+
+    <!-- EMENTA -->
+    <section class="wrap" id="tEmenta" hidden>
+      <h2 class="h">Ementa</h2>
+      <p class="sub">Altera preços, marca esgotados, esconde ou acrescenta pratos. Os clientes veem a mudança assim que guardares.</p>
+      <div class="search"><input class="field" id="emQ" type="search" placeholder="Procurar prato…" autocomplete="off" aria-label="Procurar prato"></div>
+      <div id="emCats"></div>
+    </section>
+
+    <!-- CONTA -->
+    <section class="wrap" id="tConta" hidden>
+      <h2 class="h">Conta</h2>
+      <div class="card list">
+        <a class="li" href="./">Página pública (QR) <span>→</span></a>
+        <a class="li" href="ementa.html">Ementa digital <span>→</span></a>
+      </div>
+      <form class="card" id="pwForm" novalidate>
+        <label class="lb" for="pwOld">Password atual</label>
+        <input class="field" id="pwOld" type="password" autocomplete="current-password">
+        <label class="lb mt" for="pwNew">Nova password (mínimo 8)</label>
+        <input class="field" id="pwNew" type="password" autocomplete="new-password" minlength="8">
+        <p class="err" id="pwErr" role="alert" hidden></p>
+        <button class="btn btn-line mt" type="submit" style="width:100%">Mudar password</button>
+      </form>
+      <div class="card">
+        <label class="lb">Ementa</label>
+        <p class="sub" style="margin:0 0 10px">Volta a pôr os preços e pratos como na ementa impressa.</p>
+        <button class="btn btn-danger btn-sm" id="resetMenu" type="button">Repor ementa original</button>
+      </div>
+      <button class="btn btn-line" id="logout" type="button" style="width:100%">Terminar sessão</button>
+      <p class="sub" style="text-align:center;margin-top:18px">MÉTRIKA ID Pro · suporte: João Farinha</p>
+    </section>
+  </main>
+
+  <div class="bar" id="bar" hidden><div class="inner"><span id="barTxt"></span><button class="btn btn-main" id="barBtn" type="button">Publicar</button></div></div>
+
+  <nav class="nav"><div class="wrap">
+    <button type="button" data-tab="tHoje" aria-current="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>Hoje</button>
+    <button type="button" data-tab="tEmenta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 3v8a2 2 0 0 0 2 2v8M10 3v6a2 2 0 0 1-2 2M6 3v6M17 21V3c-2 1-3 4-3 8h3"/></svg>Ementa</button>
+    <button type="button" data-tab="tConta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Conta</button>
+  </div></nav>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="config.js"></script>
+<script>
+(function () {
+  "use strict";
+  var SLUG = "solarbeirao-cacilhas";
+  var API = "https://dnwijjgefcxurdffabyq.supabase.co/rest/v1/rpc/";
+  var KEY = "sb_publishable_Cb2obpnoRx-4W8DjCXKwkA_psuaaOgt";
+  var TOK = "mk_pro_tok_" + SLUG;
+  var C = window.METRIKA_CONFIG || { ementa: { categorias: [] } };
+  var TIPOS = [["prato", "Prato do dia"], ["menu", "Menu do dia"], ["peixe", "Peixe fresco do dia"], ["marisco", "Marisco do dia"], ["sopa", "Sopa do dia"], ["sobremesa", "Sobremesa do dia"], ["chef", "Sugestão do chef"]];
+  /* Mesmos grupos do ID público, para o dono encontrar os pratos onde os clientes os veem */
+  var GRUPOS = [["Comida", ["especialidades", "marisco", "peixe", "carne", "petiscos", "entradas", "omeletes", "acompanhamentos", "sobremesas"]], ["Vinhos", ["verdes", "brancos", "tintos", "roses", "espumantes", "sangrias", "pressao"]], ["Bebidas e cafetaria", ["aguas", "cervejas", "cafetaria"]], ["Aperitivos, licores e digestivos", ["aperitivos", "licores", "destilados", "aguardentes", "whisky"]]];
+  var $ = function (s) { return document.querySelector(s); };
+
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+  function today() { return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Lisbon", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date()).slice(0, 10); }
+  function fmtDay(key, style) { return new Intl.DateTimeFormat("pt-PT", style || { weekday: "long", day: "numeric", month: "long" }).format(new Date(key + "T12:00:00")); }
+  function hhmm(iso) { return new Intl.DateTimeFormat("pt-PT", { timeZone: "Europe/Lisbon", hour: "2-digit", minute: "2-digit" }).format(new Date(iso)); }
+  function eur(v) { return v == null ? "" : new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR", minimumFractionDigits: 2 }).format(v); }
+  function parsePrice(s) { s = String(s || "").replace(/[€\s]/g, "").replace(",", "."); if (!s) return null; var n = Math.round(parseFloat(s) * 100) / 100; return isFinite(n) && n >= 0 && n < 10000 ? n : NaN; }
+  function priceStr(v) { return v == null ? "" : String(v.toFixed(2)).replace(".", ","); }
+  function norm(s) { return String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+  function toast(msg, kind) { var x = $("#toast"); x.textContent = msg; x.className = "toast show " + (kind || ""); clearTimeout(toast._t); toast._t = setTimeout(function () { x.className = "toast"; }, 2600); }
+
+  function rpc(fn, body) {
+    return fetch(API + fn, { method: "POST", headers: { apikey: KEY, "Content-Type": "application/json" }, body: JSON.stringify(body), cache: "no-store" })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error((j && j.message) || "rede"); return j; }); });
+  }
+
+  /* ---------- Estado ---------- */
+  var token = store(TOK), saved = null, draft = null, rev = 0, updatedAt = null, dirtyHoje = false, dirtyMenu = false, busy = false;
+  function blank() { return { v: 1, hoje: { data: null, fixo: false, itens: [], nota: "", publicadoEm: null }, ementa: { alt: {}, novos: [] }, recentes: [] }; }
+  function normalize(s) {
+    var b = blank(); s = s && typeof s === "object" ? s : {};
+    b.hoje = Object.assign(b.hoje, s.hoje || {}); b.hoje.itens = Array.isArray(b.hoje.itens) ? b.hoje.itens : [];
+    b.ementa = Object.assign(b.ementa, s.ementa || {}); b.ementa.alt = b.ementa.alt || {}; b.ementa.novos = Array.isArray(b.ementa.novos) ? b.ementa.novos : [];
+    b.recentes = Array.isArray(s.recentes) ? s.recentes : [];
+    return b;
+  }
+  function load(d) { saved = normalize(d.state); draft = clone(saved); rev = d.rev || 0; updatedAt = d.updated_at; dirtyHoje = dirtyMenu = false; renderAll(); }
+
+  function show(v) { ["#vLoad", "#vLogin", "#vApp"].forEach(function (id) { $(id).hidden = id !== v; }); }
+
+  /* ---------- Login ---------- */
+  $("#pwShow").onclick = function () { var p = $("#pass"); p.type = p.type === "password" ? "text" : "password"; this.textContent = p.type === "password" ? "Mostrar" : "Esconder"; };
+  $("#loginForm").onsubmit = function (e) {
+    e.preventDefault();
+    var pw = $("#pass").value, err = $("#loginErr"), b = $("#loginBtn");
+    if (!pw) { err.textContent = "Escreve a password."; err.hidden = false; return; }
+    b.disabled = true; b.textContent = "A entrar…"; err.hidden = true;
+    rpc("idpro_login", { p_slug: SLUG, p_pass: pw }).then(function (r) {
+      if (r.erro) { err.textContent = r.erro === "bloqueado" ? "Demasiadas tentativas. Espera 15 minutos e tenta outra vez." : "Password errada. Confirma maiúsculas e o traço."; err.hidden = false; return; }
+      token = r.token; store(TOK, token); $("#pass").value = ""; start();
+    }).catch(function () { err.textContent = "Sem ligação. Verifica a internet e tenta outra vez."; err.hidden = false; })
+      .then(function () { b.disabled = false; b.textContent = "Entrar"; });
+  };
+
+  function start() {
+    if (!token) { show("#vLogin"); return; }
+    rpc("idpro_me", { p_token: token }).then(function (d) {
+      if (d.erro) { token = null; store(TOK, null); show("#vLogin"); return; }
+      load(d); show("#vApp");
+    }).catch(function () { show("#vLogin"); $("#loginErr").textContent = "Sem ligação. Verifica a internet."; $("#loginErr").hidden = false; });
+  }
+
+  /* ---------- Navegação ---------- */
+  document.querySelectorAll(".nav button").forEach(function (b) {
+    b.onclick = function () {
+      document.querySelectorAll(".nav button").forEach(function (x) { x.setAttribute("aria-current", x === b ? "true" : "false"); });
+      ["tHoje", "tEmenta", "tConta"].forEach(function (id) { $("#" + id).hidden = id !== b.dataset.tab; });
+      scrollTo(0, 0); renderBar();
+    };
+  });
+
+  /* ---------- HOJE ---------- */
+  function renderHoje() {
+    var H = draft.hoje, t = today();
+    $("#hojeData").textContent = "Hoje · " + fmtDay(t);
+    var pill = $("#hojePill"), live = saved.hoje.itens.some(function (x) { return x.n; }) && (saved.hoje.fixo || saved.hoje.data === t);
+    pill.className = "pill " + (live ? "on" : "warn");
+    pill.querySelector("span").textContent = live ? (saved.hoje.fixo ? "No ar · fixo todos os dias" : "No ar · publicado às " + hhmm(saved.hoje.publicadoEm || updatedAt)) : "O dia de hoje ainda não está no ar";
+    var ban = $("#hojeBanner");
+    if (!saved.hoje.fixo && saved.hoje.data && saved.hoje.data !== t && saved.hoje.itens.length) {
+      ban.innerHTML = "Estes são os pratos de <b>" + esc(fmtDay(saved.hoje.data, { weekday: "long", day: "numeric", month: "numeric" })) + "</b>. Muda o que for diferente e carrega em <b>Publicar hoje</b>.";
+      ban.hidden = false;
+    } else ban.hidden = true;
+    var box = $("#hojeItens"); box.innerHTML = "";
+    if (!H.itens.length) box.innerHTML = '<div class="card empty">Ainda não há pratos para hoje.<br>Carrega num botão abaixo para acrescentar.</div>';
+    H.itens.forEach(function (it, i) {
+      var c = document.createElement("div"); c.className = "card";
+      c.innerHTML = '<div class="item-top"><select class="field" aria-label="Tipo">' + TIPOS.map(function (tp) { return '<option value="' + tp[0] + '"' + (tp[0] === it.t ? " selected" : "") + ">" + esc(tp[1]) + "</option>"; }).join("") + '</select><button class="x" type="button" aria-label="Remover">×</button></div>' +
+        '<input class="field" list="recentes" maxlength="120" placeholder="Nome do prato" aria-label="Nome do prato" value="' + esc(it.n || "") + '">' +
+        '<div class="grid2"><input class="field" maxlength="200" placeholder="Descrição (opcional)" aria-label="Descrição" value="' + esc(it.d || "") + '"><div class="euro"><input class="field" inputmode="decimal" placeholder="Preço" value="' + esc(priceStr(it.p)) + '" aria-label="Preço"></div></div>' +
+        '<label class="tog mt"><span>Esgotado</span><input type="checkbox"' + (it.e ? " checked" : "") + '><i class="sw red"></i></label>';
+      var sel = c.querySelector("select"), ins = c.querySelectorAll("input");
+      sel.onchange = function () { it.t = sel.value; touchHoje(); };
+      ins[0].oninput = function () { it.n = ins[0].value.trim(); touchHoje(); };
+      ins[0].onchange = function () { var r = draft.recentes.filter(function (x) { return x.n === it.n; })[0]; if (r && it.p == null && r.p != null) { it.p = r.p; ins[2].value = priceStr(r.p); touchHoje(); } };
+      ins[1].oninput = function () { it.d = ins[1].value.trim(); touchHoje(); };
+      ins[2].oninput = function () { var v = parsePrice(ins[2].value); it.p = isNaN(v) ? it.p : v; ins[2].style.borderColor = isNaN(v) ? "var(--bad)" : ""; touchHoje(); };
+      ins[3].onchange = function () { it.e = ins[3].checked; touchHoje(); };
+      c.querySelector(".x").onclick = function () { H.itens.splice(i, 1); touchHoje(); renderHoje(); };
+      box.appendChild(c);
+    });
+    var ch = $("#hojeChips"); ch.innerHTML = "";
+    TIPOS.forEach(function (tp) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = "+ " + tp[1];
+      b.onclick = function () { H.itens.push({ t: tp[0], n: "", d: "", p: null, e: false }); touchHoje(); renderHoje(); var f = box.querySelectorAll('input[list="recentes"]'); if (f.length) f[f.length - 1].focus(); };
+      ch.appendChild(b);
+    });
+    $("#hojeNota").value = H.nota || "";
+    $("#hojeFixo").checked = !!H.fixo;
+    $("#recentes").innerHTML = draft.recentes.map(function (r) { return '<option value="' + esc(r.n) + '">'; }).join("");
+    $("#hojeLimpar").hidden = !saved.hoje.itens.length;
+  }
+  $("#hojeNota").oninput = function () { draft.hoje.nota = this.value.trim(); touchHoje(); };
+  $("#hojeFixo").onchange = function () { draft.hoje.fixo = this.checked; touchHoje(); };
+  var limparArmed = 0;
+  $("#hojeLimpar").onclick = function () {
+    var b = this;
+    if (Date.now() > limparArmed) { limparArmed = Date.now() + 4000; b.textContent = "Tens a certeza? Toca outra vez"; setTimeout(function () { b.textContent = "Tirar o dia do ar"; }, 4000); return; }
+    limparArmed = 0; b.textContent = "Tirar o dia do ar";
+    draft.hoje = { data: null, fixo: false, itens: [], nota: "", publicadoEm: null };
+    save("limpar");
+  };
+  function touchHoje() { dirtyHoje = true; renderBar(); }
+
+  /* ---------- EMENTA ---------- */
+  function keyOf(c, p) { return c.id + "|" + p[0]; }
+  function countChanges() {
+    var a = JSON.stringify(saved.ementa), b = JSON.stringify(draft.ementa); if (a === b) return 0;
+    var n = 0, A = saved.ementa.alt, B = draft.ementa.alt, keys = {};
+    Object.keys(A).concat(Object.keys(B)).forEach(function (k) { keys[k] = 1; });
+    Object.keys(keys).forEach(function (k) { if (JSON.stringify(A[k] || null) !== JSON.stringify(B[k] || null)) n++; });
+    if (JSON.stringify(saved.ementa.novos) !== JSON.stringify(draft.ementa.novos)) n++;
+    return n || 1;
+  }
+  function setAlt(k, patch, base) {
+    var A = draft.ementa.alt, a = Object.assign({}, A[k] || {}, patch);
+    if (a.p != null && base != null && Math.abs(a.p - base) < 0.001) delete a.p;
+    if (a.p == null) delete a.p; if (!a.e) delete a.e; if (!a.o) delete a.o;
+    if (Object.keys(a).length) A[k] = a; else delete A[k];
+    dirtyMenu = countChanges() > 0; renderBar();
+  }
+  var openCats = {};
+  function orderedCats() {
+    var by = {}, out = [], used = {};
+    C.ementa.categorias.forEach(function (c) { by[c.id] = c; });
+    GRUPOS.forEach(function (g) { g[1].forEach(function (id) { if (by[id]) { out.push([g[0], by[id]]); used[id] = 1; } }); });
+    C.ementa.categorias.forEach(function (c) { if (!used[c.id]) out.push(["Outros", c]); });
+    return out;
+  }
+  function renderEmenta() {
+    var box = $("#emCats"), q = norm($("#emQ").value.trim()); box.innerHTML = "";
+    var anyShown = false, lastG = null;
+    orderedCats().forEach(function (gc) {
+      var c = gc[1];
+      var rows = c.pratos.filter(function (p) { return !q || norm(p[0]).indexOf(q) > -1; });
+      var novos = draft.ementa.novos.filter(function (n) { return n.c === c.id && (!q || norm(n.n).indexOf(q) > -1); });
+      if (q && !rows.length && !novos.length) return;
+      anyShown = true;
+      if (gc[0] !== lastG) { var h = document.createElement("p"); h.className = "grp-h"; h.textContent = gc[0]; box.appendChild(h); lastG = gc[0]; }
+      var changed = c.pratos.filter(function (p) { return draft.ementa.alt[keyOf(c, p)]; }).length + draft.ementa.novos.filter(function (n) { return n.c === c.id; }).length;
+      var d = document.createElement("details"); d.className = "cat"; d.open = !!q || !!openCats[c.id];
+      d.ontoggle = function () { openCats[c.id] = d.open; };
+      d.innerHTML = "<summary><span>" + esc(c.nome[0]) + (changed ? "<em>" + changed + "</em>" : "") + "</span><small>" + (c.pratos.length + draft.ementa.novos.filter(function (n) { return n.c === c.id; }).length) + "</small></summary>";
+      rows.forEach(function (p) { d.appendChild(rowEl(c, p)); });
+      novos.forEach(function (n) { d.appendChild(novoEl(n)); });
+      if (!q) d.appendChild(addEl(c));
+      box.appendChild(d);
+    });
+    if (!anyShown) box.innerHTML = '<div class="card empty">Nenhum prato encontrado.</div>';
+  }
+  function rowEl(c, p) {
+    var k = keyOf(c, p), a = draft.ementa.alt[k] || {}, base = typeof p[8] === "number" ? p[8] : null;
+    var r = document.createElement("div"); r.className = "row" + (draft.ementa.alt[k] ? " chg" : "") + (a.o || a.e ? " off" : "");
+    r.innerHTML = '<div class="rn">' + esc(p[0]) + '</div><div class="rb">' + (base != null ? "Preço da ementa: " + esc(eur(base)) + (p[9] ? " / " + esc(p[9]) : "") : "Sem preço na ementa") + "</div>" +
+      '<div class="rc"><div class="euro"><input class="field" inputmode="decimal" aria-label="Preço de ' + esc(p[0]) + '" value="' + esc(priceStr(a.p != null ? a.p : base)) + '"></div>' +
+      '<button type="button" class="tbtn sold" aria-pressed="' + (a.e ? "true" : "false") + '">Esgotado</button>' +
+      '<button type="button" class="tbtn hide" aria-pressed="' + (a.o ? "true" : "false") + '">Esconder</button></div>';
+    var inp = r.querySelector("input"), bs = r.querySelectorAll(".tbtn");
+    inp.onchange = function () {
+      var v = parsePrice(inp.value);
+      if (isNaN(v)) { inp.style.borderColor = "var(--bad)"; toast("Preço inválido. Ex.: 12,50", "bad"); return; }
+      inp.style.borderColor = ""; setAlt(k, { p: v == null ? null : v }, base); refreshRow();
+    };
+    bs[0].onclick = function () { setAlt(k, { e: !(draft.ementa.alt[k] || {}).e }, base); refreshRow(); };
+    bs[1].onclick = function () { setAlt(k, { o: !(draft.ementa.alt[k] || {}).o }, base); refreshRow(); };
+    function refreshRow() { var n = rowEl(c, p); r.replaceWith(n); updateBadge(n, c); }
+    return r;
+  }
+  function updateBadge(node, c) {
+    var d = node.closest("details"); if (!d) return;
+    var n = c.pratos.filter(function (p) { return draft.ementa.alt[keyOf(c, p)]; }).length + draft.ementa.novos.filter(function (x) { return x.c === c.id; }).length;
+    var s = d.querySelector("summary span"); s.innerHTML = esc(c.nome[0]) + (n ? "<em>" + n + "</em>" : "");
+  }
+  function novoEl(n) {
+    var r = document.createElement("div"); r.className = "row chg" + (n.e ? " off" : "");
+    r.innerHTML = '<div class="rn"><span class="new-tag">Novo</span>' + esc(n.n) + '</div><div class="rb">Só aparece em português</div>' +
+      '<div class="rc"><div class="euro"><input class="field" inputmode="decimal" aria-label="Preço" value="' + esc(priceStr(n.p)) + '"></div>' +
+      '<button type="button" class="tbtn sold" aria-pressed="' + (n.e ? "true" : "false") + '">Esgotado</button>' +
+      '<button type="button" class="tbtn hide">Apagar</button></div>';
+    var inp = r.querySelector("input"), bs = r.querySelectorAll(".tbtn");
+    inp.onchange = function () { var v = parsePrice(inp.value); if (isNaN(v)) { toast("Preço inválido. Ex.: 12,50", "bad"); return; } n.p = v; menuChanged(); };
+    bs[0].onclick = function () { n.e = !n.e; menuChanged(); renderEmenta(); };
+    bs[1].onclick = function () { draft.ementa.novos = draft.ementa.novos.filter(function (x) { return x !== n; }); menuChanged(); renderEmenta(); };
+    return r;
+  }
+  function addEl(c) {
+    var r = document.createElement("div"); r.className = "addrow";
+    r.innerHTML = '<div class="grid2"><input class="field" maxlength="120" aria-label="Nome do novo prato" placeholder="Novo em ' + esc(c.nome[0].toLowerCase()) + '"><div class="euro"><input class="field" inputmode="decimal" placeholder="Preço" aria-label="Preço"></div></div><button type="button" class="btn btn-line btn-sm mt">+ Adicionar</button>';
+    var ins = r.querySelectorAll("input");
+    r.querySelector("button").onclick = function () {
+      var nm = ins[0].value.trim(), v = parsePrice(ins[1].value);
+      if (!nm) { ins[0].focus(); toast("Escreve o nome do prato.", "bad"); return; }
+      if (isNaN(v)) { ins[1].focus(); toast("Preço inválido. Ex.: 12,50", "bad"); return; }
+      draft.ementa.novos.push({ id: Date.now().toString(36), c: c.id, n: nm, p: v, e: false });
+      openCats[c.id] = true; menuChanged(); renderEmenta();
+    };
+    return r;
+  }
+  function menuChanged() { dirtyMenu = countChanges() > 0; renderBar(); }
+  $("#emQ").oninput = renderEmenta;
+  var resetArmed = 0;
+  $("#resetMenu").onclick = function () {
+    var b = this;
+    if (Date.now() > resetArmed) { resetArmed = Date.now() + 4000; b.textContent = "Tens a certeza? Toca outra vez"; setTimeout(function () { b.textContent = "Repor ementa original"; }, 4000); return; }
+    resetArmed = 0; b.textContent = "Repor ementa original";
+    draft.ementa = { alt: {}, novos: [] }; save("menu");
+  };
+
+  /* ---------- Barra de publicar ---------- */
+  function currentTab() { var b = document.querySelector('.nav button[aria-current="true"]'); return b ? b.dataset.tab : "tHoje"; }
+  function renderBar() {
+    var bar = $("#bar"), txt = $("#barTxt"), btn = $("#barBtn"), tab = currentTab(), t = today();
+    var hasItems = draft.hoje.itens.some(function (x) { return x.n; });
+    var needToday = hasItems && !draft.hoje.fixo && saved.hoje.data !== t;
+    if (tab === "tHoje" && (dirtyHoje || needToday) && hasItems) {
+      txt.textContent = dirtyHoje ? "Alterações por publicar" : "Ainda não publicaste hoje";
+      btn.textContent = draft.hoje.fixo ? "Publicar" : "Publicar hoje"; btn.onclick = function () { save("hoje"); }; bar.hidden = false;
+    } else if (tab === "tEmenta" && dirtyMenu) {
+      var n = countChanges(); txt.textContent = n + (n === 1 ? " alteração por guardar" : " alterações por guardar");
+      btn.textContent = "Guardar ementa"; btn.onclick = function () { save("menu"); }; bar.hidden = false;
+    } else if (dirtyHoje && tab !== "tHoje") {
+      txt.textContent = "Tens o dia de hoje por publicar"; btn.textContent = "Publicar hoje"; btn.onclick = function () { save("hoje"); }; bar.hidden = false;
+    } else bar.hidden = true;
+    btn.disabled = busy;
+  }
+
+  /* ---------- Guardar ---------- */
+  function save(what) {
+    if (busy) return;
+    var next = clone(saved);
+    if (what === "hoje" || what === "limpar") {
+      var H = clone(draft.hoje);
+      H.itens = H.itens.filter(function (x) { return x.n; }).map(function (x) { return { t: x.t || "prato", n: x.n, d: x.d || "", p: x.p == null ? null : x.p, e: !!x.e }; });
+      if (what === "hoje") {
+        if (!H.itens.length) { toast("Acrescenta pelo menos um prato com nome.", "bad"); return; }
+        H.data = today(); H.publicadoEm = new Date().toISOString();
+        var rec = draft.recentes.slice();
+        H.itens.forEach(function (x) { rec = rec.filter(function (r) { return r.n !== x.n; }); rec.unshift({ n: x.n, t: x.t, p: x.p }); });
+        next.recentes = rec.slice(0, 60);
+      }
+      next.hoje = H;
+    }
+    if (what === "menu") next.ementa = clone(draft.ementa);
+    busy = true; renderBar(); $("#barBtn").textContent = "A guardar…";
+    rpc("idpro_save", { p_token: token, p_state: next, p_rev: rev }).then(function (r) {
+      if (r.erro === "sessao") { toast("A sessão terminou. Entra outra vez.", "bad"); token = null; store(TOK, null); show("#vLogin"); return; }
+      if (r.erro === "conflito") { toast("Houve uma alteração noutro telemóvel. Atualizei — repete a tua alteração.", "bad"); return refetch(); }
+      if (r.erro) { toast("Não foi possível guardar.", "bad"); return; }
+      var keepHoje = what !== "hoje" && what !== "limpar" && dirtyHoje ? clone(draft.hoje) : null;
+      var keepMenu = what !== "menu" && dirtyMenu ? clone(draft.ementa) : null;
+      saved = normalize(next); rev = r.rev; updatedAt = r.updated_at;
+      draft = clone(saved);
+      if (keepHoje) draft.hoje = keepHoje; else dirtyHoje = false;
+      if (keepMenu) draft.ementa = keepMenu; else dirtyMenu = false;
+      toast(what === "hoje" ? "Publicado. Já está no QR ✓" : what === "limpar" ? "Dia retirado do ar ✓" : "Ementa atualizada ✓", "ok");
+      renderAll();
+    }).catch(function () { toast("Sem ligação. Nada foi perdido — tenta outra vez.", "bad"); })
+      .then(function () { busy = false; renderBar(); });
+  }
+  function refetch() { return rpc("idpro_me", { p_token: token }).then(function (d) { if (!d.erro) load(d); }); }
+
+  function renderAll() { renderHoje(); renderEmenta(); renderBar(); }
+
+  /* ---------- Conta ---------- */
+  $("#pwForm").onsubmit = function (e) {
+    e.preventDefault();
+    var o = $("#pwOld").value, n = $("#pwNew").value, err = $("#pwErr");
+    if (n.length < 8) { err.textContent = "A nova password tem de ter pelo menos 8 caracteres."; err.hidden = false; return; }
+    rpc("idpro_change_password", { p_token: token, p_old: o, p_new: n }).then(function (r) {
+      if (r.erro) { err.textContent = r.erro === "invalido" ? "A password atual está errada." : r.erro === "curta" ? "Mínimo 8 caracteres." : "Sessão terminada. Entra outra vez."; err.hidden = false; return; }
+      err.hidden = true; $("#pwOld").value = $("#pwNew").value = ""; toast("Password alterada ✓", "ok");
+    }).catch(function () { err.textContent = "Sem ligação."; err.hidden = false; });
+  };
+  $("#logout").onclick = function () { var t = token; token = null; store(TOK, null); rpc("idpro_logout", { p_token: t }).catch(function () {}); show("#vLogin"); };
+
+  addEventListener("beforeunload", function (e) { if (dirtyHoje || dirtyMenu) { e.preventDefault(); e.returnValue = ""; } });
+  document.addEventListener("visibilitychange", function () { if (!document.hidden && token && !dirtyHoje && !dirtyMenu && !busy) refetch().catch(function () {}); });
+
+  start();
+})();
+</script>
+</body>
+</html>
