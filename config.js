@@ -10,7 +10,7 @@ window.METRIKA_CONFIG = {
 
   negocio: {
     nome: "Solar Beirão",
-    nomeCompleto: "Solar Beirão Marisqueira",
+    nomeCompleto: "Solar Beirão Actividades Hoteleiras, Lda.",
     tipo: {"pt": "Marisqueira · Peixe, marisco e cozinha portuguesa", "en": "Seafood restaurant · Fish, shellfish & Portuguese cuisine", "fr": "Restaurant de fruits de mer · Poissons et cuisine portugaise", "es": "Marisquería · Pescado, marisco y cocina portuguesa", "de": "Meeresfrüchte-Restaurant · Fisch & portugiesische Küche", "it": "Ristorante di mare · Pesce, crostacei e cucina portoghese", "zh": "海鲜餐厅 · 鲜鱼、海鲜与葡式料理", "ja": "シーフードレストラン · 魚介とポルトガル料理"},
     slogan: {"pt": "Marisco e peixe fresco todos os dias.", "en": "Fresh seafood and fish, every day.", "fr": "Fruits de mer et poisson frais, tous les jours.", "es": "Marisco y pescado fresco, todos los días.", "de": "Frische Meeresfrüchte und Fisch, jeden Tag.", "it": "Frutti di mare e pesce fresco, ogni giorno.", "zh": "每日新鲜海鲜与鲜鱼。", "ja": "毎日新鮮な魚介をお届けします。"},
     telefone: "+351212766019",
@@ -18,7 +18,7 @@ window.METRIKA_CONFIG = {
     email: "solarbeirao1@gmail.com",
     morada: { rua: "Rua Cândido dos Reis, 17", local: "Cacilhas", codigoPostal: "2800-270", cidade: "Almada", concelho: "Almada", pais: "Portugal" },
     geo: { lat: 38.6869225, lng: -9.1482377 },
-    nif: "",
+    nif: "500966966",
     precoMedio: "€€",
   },
 
