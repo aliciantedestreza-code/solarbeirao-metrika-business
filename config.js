@@ -6,7 +6,7 @@
    ===================================================================== */
 window.METRIKA_CONFIG = {
   modo: "demo",
-  url: "https://solarbeirao-metrikaid.vercel.app",
+  url: "https://solarbeiraometrikaidbusinessfinal.vercel.app",
 
   negocio: {
     nome: "Solar Beirão",
