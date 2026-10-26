@@ -100,7 +100,7 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
 .addrow{padding:12px 16px 16px;border-top:1px solid var(--line)}
 .addrow .grid2{margin-top:0}
 .new-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--gold);color:#1b1407;border-radius:999px;padding:2px 8px;margin-right:6px;vertical-align:middle}
-.trd{margin-top:10px}.trd summary{min-height:44px;display:flex;align-items:center;font-size:14px;font-weight:700;color:var(--navy);cursor:pointer}.trd .field{margin-top:8px}
+.trd{margin-top:10px}.trd summary{min-height:44px;display:flex;align-items:center;font-size:14px;font-weight:700;color:var(--navy);cursor:pointer}.trd .field{margin-top:4px}.trl{display:block;margin-top:10px;font-size:13px;font-weight:700;color:var(--muted)}
 .grp-h{margin:18px 4px 4px;font:700 12px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--gold-d)}
 /* Barra de publicar */
 .bar{position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));z-index:30;padding:10px 16px;pointer-events:none}
@@ -161,7 +161,7 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
       </div>
       <div class="card">
         <label class="lb" for="hojeNota">Nota para os clientes (opcional)</label>
-        <textarea class="field" id="hojeNota" rows="2" maxlength="240" placeholder="Ex.: Hoje temos percebes e sapateira fresca."></textarea>
+        <textarea class="field" id="hojeNota" rows="2" maxlength="200" placeholder="Ex.: Hoje temos percebes e sapateira fresca."></textarea>
         <label class="tog mt"><span>Mostrar todos os dias até eu mudar</span><input type="checkbox" id="hojeFixo"><i class="sw"></i></label>
       </div>
       <button class="btn btn-danger btn-sm" id="hojeLimpar" type="button">Tirar o dia do ar</button>
@@ -224,8 +224,53 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
   var TIPOS = [["prato", "Prato do dia"], ["menu", "Menu do dia"], ["peixe", "Peixe fresco do dia"], ["marisco", "Marisco do dia"], ["sopa", "Sopa do dia"], ["sobremesa", "Sobremesa do dia"], ["chef", "Sugestão do chef"]];
   /* Mesmos grupos do ID público, para o dono encontrar os pratos onde os clientes os veem */
   var GRUPOS = [["Comida", ["especialidades", "marisco", "peixe", "carne", "petiscos", "entradas", "omeletes", "acompanhamentos", "sobremesas"]], ["Vinhos", ["verdes", "brancos", "tintos", "roses", "espumantes", "sangrias", "pressao"]], ["Bebidas e cafetaria", ["aguas", "cervejas", "cafetaria"]], ["Aperitivos, licores e digestivos", ["aperitivos", "licores", "destilados", "aguardentes", "whisky"]]];
-  var LN = [["EN", "English"], ["FR", "Français"], ["ES", "Español"], ["DE", "Deutsch"]];
+  var LN = [["EN", "English"], ["FR", "Français"], ["ES", "Español"], ["DE", "Deutsch"], ["IT", "Italiano"], ["ZH", "中文"], ["JA", "日本語"]];
+  var FN = API.replace("/rest/v1/rpc/", "/functions/v1/idpro-traduzir");
   var $ = function (s) { return document.querySelector(s); };
+
+  /* ---------- Tradução automática (PT → 7 línguas), feita no servidor ---------- */
+  function translate(texts) {
+    return fetch(FN, { method: "POST", headers: { apikey: KEY, "Content-Type": "application/json" }, body: JSON.stringify({ token: token, textos: texts }), cache: "no-store" })
+      .then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (j) {
+          if (!r.ok || j.erro || !Array.isArray(j.traducoes) || j.traducoes.length !== texts.length) throw new Error(j.erro || "rede");
+          return j.traducoes;
+        });
+      });
+  }
+  function translateAll(texts) {
+    var parts = []; for (var i = 0; i < texts.length; i += 10) parts.push(texts.slice(i, i + 10));
+    return Promise.all(parts.map(translate)).then(function (rs) { return [].concat.apply([], rs); });
+  }
+  function srcOf(it) { return it.n + "\u0001" + (it.d || ""); }
+  function okTr(a) { return Array.isArray(a) && a.length === 7 && a.every(Boolean); }
+  function fillHoje(H) {
+    var jobs = [], texts = [];
+    H.itens.forEach(function (it) {
+      if (it.trSrc === srcOf(it) && okTr(it.tr)) return;
+      jobs.push({ it: it, i: texts.length, d: !!it.d }); texts.push(it.n); if (it.d) texts.push(it.d);
+    });
+    var notaJob = null;
+    if (!H.nota) { delete H.ntr; delete H.ntrSrc; }
+    else if (!(H.ntrSrc === H.nota && okTr(H.ntr))) { notaJob = texts.length; texts.push(H.nota); }
+    if (!texts.length) return Promise.resolve();
+    return translateAll(texts).then(function (res) {
+      jobs.forEach(function (j) { j.it.tr = res[j.i]; if (j.d) j.it.td = res[j.i + 1]; else delete j.it.td; j.it.trSrc = srcOf(j.it); });
+      if (notaJob != null) { H.ntr = res[notaJob]; H.ntrSrc = H.nota; }
+    });
+  }
+  function fillNovos(list) {
+    var need = list.filter(function (n) { return !okTr(n.tr); });
+    if (!need.length) return Promise.resolve();
+    return translateAll(need.map(function (n) { return n.n; })).then(function (res) { need.forEach(function (n, i) { n.tr = res[i]; }); });
+  }
+  /* O dono pode ver e corrigir o que foi traduzido */
+  function trEditor(o, onEdit) {
+    var d = document.createElement("details"); d.className = "trd";
+    d.innerHTML = "<summary>Ver traduções (7 línguas)</summary>" + LN.map(function (l, i) { return '<label class="trl">' + esc(l[1]) + '<input class="field" maxlength="140" value="' + esc(o.tr[i] || "") + '"></label>'; }).join("");
+    [].forEach.call(d.querySelectorAll("input"), function (inp, i) { inp.onchange = function () { o.tr[i] = inp.value.trim(); onEdit(); }; });
+    return d;
+  }
 
   function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
@@ -317,6 +362,8 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
       ins[2].oninput = function () { var v = parsePrice(ins[2].value); it.p = isNaN(v) ? it.p : v; ins[2].style.borderColor = isNaN(v) ? "var(--bad)" : ""; touchHoje(); };
       ins[3].onchange = function () { it.e = ins[3].checked; touchHoje(); };
       c.querySelector(".x").onclick = function () { H.itens.splice(i, 1); touchHoje(); renderHoje(); };
+      if (it.n && it.trSrc === srcOf(it) && okTr(it.tr)) c.appendChild(trEditor(it, touchHoje));
+      else if (it.n) { var hint = document.createElement("p"); hint.className = "rb"; hint.textContent = "Traduzido sozinho para 7 línguas ao publicar."; c.appendChild(hint); }
       box.appendChild(c);
     });
     var ch = $("#hojeChips"); ch.innerHTML = "";
@@ -413,7 +460,7 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
   }
   function novoEl(n) {
     var r = document.createElement("div"); r.className = "row chg" + (n.e ? " off" : "");
-    r.innerHTML = '<div class="rn"><span class="new-tag">Novo</span>' + esc(n.n) + '</div><div class="rb">' + (n.tr && n.tr.some(Boolean) ? "Traduzido: " + LN.filter(function (l, i) { return n.tr[i]; }).map(function (l) { return l[0]; }).join(", ") : "Só aparece em português") + '</div>' +
+    r.innerHTML = '<div class="rn"><span class="new-tag">Novo</span>' + esc(n.n) + '</div><div class="rb">' + (okTr(n.tr) ? "Traduzido em 7 línguas ✓" : "Traduzido sozinho ao guardar") + '</div>' +
       '<div class="rc"><div class="euro"><input class="field" inputmode="decimal" aria-label="Preço" value="' + esc(priceStr(n.p)) + '"></div>' +
       '<button type="button" class="tbtn sold" aria-pressed="' + (n.e ? "true" : "false") + '">Esgotado</button>' +
       '<button type="button" class="tbtn hide">Apagar</button></div>';
@@ -421,23 +468,24 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
     inp.onchange = function () { var v = parsePrice(inp.value); if (isNaN(v)) { toast("Preço inválido. Ex.: 12,50", "bad"); return; } n.p = v; menuChanged(); };
     bs[0].onclick = function () { n.e = !n.e; menuChanged(); renderEmenta(); };
     bs[1].onclick = function () { draft.ementa.novos = draft.ementa.novos.filter(function (x) { return x !== n; }); menuChanged(); renderEmenta(); };
+    if (okTr(n.tr)) r.appendChild(trEditor(n, menuChanged));
     return r;
   }
   function addEl(c) {
     var r = document.createElement("div"); r.className = "addrow";
     r.innerHTML = '<div class="grid2"><input class="field" maxlength="120" aria-label="Nome do novo prato" placeholder="Novo em ' + esc(c.nome[0].toLowerCase()) + '"><div class="euro"><input class="field" inputmode="decimal" placeholder="Preço" aria-label="Preço"></div></div>' +
-      '<details class="trd"><summary>Traduções (opcional) · EN, FR, ES, DE</summary>' + LN.map(function (l) { return '<input class="field" maxlength="140" aria-label="Nome em ' + l[1] + '" placeholder="' + l[1] + '">'; }).join("") + "<p class=\"rb\">Sem tradução, o prato aparece em português com um aviso. Italiano, chinês e japonês ficam em português.</p></details>" +
+      '<p class="rb">Escreve só em português. O painel traduz para as outras 7 línguas.</p>' +
       '<button type="button" class="btn btn-line btn-sm mt">+ Adicionar</button>';
-    var ins = r.querySelectorAll(".grid2 input"), tri = r.querySelectorAll(".trd input");
-    r.querySelector("button").onclick = function () {
+    var ins = r.querySelectorAll(".grid2 input"), btn = r.querySelector("button");
+    btn.onclick = function () {
       var nm = ins[0].value.trim(), v = parsePrice(ins[1].value);
       if (!nm) { ins[0].focus(); toast("Escreve o nome do prato.", "bad"); return; }
       if (isNaN(v)) { ins[1].focus(); toast("Preço inválido. Ex.: 12,50", "bad"); return; }
-      var tr = [].map.call(tri, function (x) { return x.value.trim(); });
       var novo = { id: Date.now().toString(36), c: c.id, n: nm, p: v, e: false };
-      if (tr.some(Boolean)) novo.tr = tr;
-      draft.ementa.novos.push(novo);
-      openCats[c.id] = true; menuChanged(); renderEmenta();
+      btn.disabled = true; btn.textContent = "A traduzir…";
+      translate([nm]).then(function (res) { novo.tr = res[0]; })
+        .catch(function () { toast("Adicionado só em português. Traduz-se ao guardar.", "bad"); })
+        .then(function () { draft.ementa.novos.push(novo); openCats[c.id] = true; menuChanged(); renderEmenta(); });
     };
     return r;
   }
@@ -475,7 +523,7 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
     var next = clone(saved);
     if (what === "hoje" || what === "limpar") {
       var H = clone(draft.hoje);
-      H.itens = H.itens.filter(function (x) { return x.n; }).map(function (x) { return { t: x.t || "prato", n: x.n, d: x.d || "", p: x.p == null ? null : x.p, e: !!x.e }; });
+      H.itens = H.itens.filter(function (x) { return x.n; }).map(function (x) { var o = { t: x.t || "prato", n: x.n, d: x.d || "", p: x.p == null ? null : x.p, e: !!x.e }; if (x.tr) { o.tr = x.tr; o.trSrc = x.trSrc; } if (x.td) o.td = x.td; return o; });
       if (what === "hoje") {
         if (!H.itens.length) { toast("Acrescenta pelo menos um prato com nome.", "bad"); return; }
         H.data = today(); H.publicadoEm = new Date().toISOString();
@@ -486,8 +534,9 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
       next.hoje = H;
     }
     if (what === "menu") next.ementa = clone(draft.ementa);
-    busy = true; renderBar(); $("#barBtn").textContent = "A guardar…";
-    rpc("idpro_save", { p_token: token, p_state: next, p_rev: rev }).then(function (r) {
+    busy = true; renderBar(); $("#barBtn").textContent = what === "hoje" || what === "menu" ? "A traduzir e guardar…" : "A guardar…";
+    var tfail = false, pre = what === "hoje" ? fillHoje(next.hoje) : what === "menu" ? fillNovos(next.ementa.novos) : Promise.resolve();
+    pre.catch(function () { tfail = true; }).then(function () { return rpc("idpro_save", { p_token: token, p_state: next, p_rev: rev }); }).then(function (r) {
       if (r.erro === "sessao") { toast("A sessão terminou. Entra outra vez.", "bad"); token = null; store(TOK, null); show("#vLogin"); return; }
       if (r.erro === "conflito") { toast("Houve uma alteração noutro telemóvel. Atualizei — repete a tua alteração.", "bad"); return refetch(); }
       if (r.erro) { toast("Não foi possível guardar.", "bad"); return; }
@@ -497,7 +546,7 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
       draft = clone(saved);
       if (keepHoje) draft.hoje = keepHoje; else dirtyHoje = false;
       if (keepMenu) draft.ementa = keepMenu; else dirtyMenu = false;
-      toast(what === "hoje" ? "Publicado. Já está no QR ✓" : what === "limpar" ? "Dia retirado do ar ✓" : "Ementa atualizada ✓", "ok");
+      toast(what === "hoje" ? (tfail ? "Publicado só em português: a tradução falhou. Publica outra vez para tentar." : "Publicado e traduzido. Já está no QR ✓") : what === "limpar" ? "Dia retirado do ar ✓" : (tfail && what === "menu" ? "Guardado só em português: a tradução falhou. Guarda outra vez para tentar." : "Ementa atualizada ✓"), tfail ? "bad" : "ok");
       renderAll();
     }).catch(function () { toast("Sem ligação. Nada foi perdido — tenta outra vez.", "bad"); })
       .then(function () { busy = false; renderBar(); });

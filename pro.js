@@ -71,7 +71,9 @@
       var c = C.ementa.categorias.filter(function (x) { return x.id === n.c; })[0];
       if (!c) return;
       var t = Array.isArray(n.tr) ? n.tr : [];
-      var row = [String(n.n).slice(0, 140), String(t[0] || "").slice(0, 140), String(t[1] || "").slice(0, 140), String(t[2] || "").slice(0, 140), String(t[3] || "").slice(0, 140), "", "", "", num(n.p)];
+      var row = [String(n.n).slice(0, 140)];
+      for (var k = 0; k < 7; k++) row.push(String(t[k] || "").slice(0, 140));   // EN, FR, ES, DE, IT, ZH, JA
+      row.push(num(n.p));
       for (var i = 1; i < 8; i++) if (!row[i]) NEW_MISS[i] = true;
       if (n.e) { for (var j = 0; j < 8; j++) if (row[j]) row[j] += SOLD_MARK; row[8] = null; }
       c.pratos.push(row); HAS_NEW = true;
@@ -105,19 +107,26 @@
     if (!box) return;
     var h = STATE && STATE.hoje;
     if (!dayVisible(h)) { box.hidden = true; box.innerHTML = ""; return; }
-    var L = lang(), onMenu = document.body.classList.contains("em-body");
+    var L = lang(), onMenu = document.body.classList.contains("em-body"), li = IDX[L] - 1, missing = false;
+    /* Tradução guardada pelo painel (EN, FR, ES, DE, IT, ZH, JA); sem ela, mostra o português */
+    function pick(pt, arr) {
+      if (L === "pt") return pt;
+      var s = Array.isArray(arr) ? arr[li] : "";
+      if (!s) { if (pt) missing = true; return pt; }
+      return s;
+    }
     var items = h.itens.filter(function (x) { return x && x.n; }).map(function (x) {
       var tipo = TIPOS[x.t] ? tr(TIPOS[x.t]) : tr(TIPOS.prato);
-      var p = num(x.p);
+      var p = num(x.p), nm = pick(x.n, x.tr), ds = x.d ? pick(x.d, x.td) : "";
       return '<li class="pro-item' + (x.e ? " pro-off" : "") + '">' +
         '<span class="pro-tipo">' + esc(tipo) + "</span>" +
-        '<span class="pro-row"><b>' + esc(x.n) + "</b>" +
+        '<span class="pro-row"><b>' + esc(nm) + "</b>" +
         (x.e ? '<span class="pro-sold">' + esc(tr(T.esg)) + "</span>" : p != null ? '<span class="pro-price">' + esc(money(p)) + "</span>" : "") +
-        "</span>" + (x.d ? '<span class="pro-desc">' + esc(x.d) + "</span>" : "") + "</li>";
+        "</span>" + (ds ? '<span class="pro-desc">' + esc(ds) + "</span>" : "") + "</li>";
     }).join("");
     var when = h.fixo ? "" : (h.publicadoEm || UPDATED) ? tr(T.atual).replace("{t}", hhmm(h.publicadoEm || UPDATED)) : "";
-    var note = h.nota ? '<p class="pro-note">' + esc(h.nota) + "</p>" : "";
-    var ptNote = L !== "pt" ? '<p class="pro-pt">' + esc(tr(T.ptNota)) + "</p>" : "";
+    var note = h.nota ? '<p class="pro-note">' + esc(pick(h.nota, h.ntr)) + "</p>" : "";
+    var ptNote = missing ? '<p class="pro-pt">' + esc(tr(T.ptNota)) + "</p>" : "";
     var ctas = onMenu ? "" : '<div class="pro-cta"><a class="btn btn-gold" href="#reservas">' + esc(tr(T.reservar)) + "</a></div>";
     box.innerHTML = '<div class="wrap"><div class="pro-card">' +
       '<div class="pro-head"><span class="pro-live" aria-hidden="true"></span><span class="pro-kick">' + esc(tr(T.kicker)) + "</span></div>" +
