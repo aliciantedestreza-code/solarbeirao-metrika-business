@@ -33,6 +33,11 @@
 
   function backHref() { var q = new URLSearchParams(); q.set("lang", lang); if (MODE !== (C.modo || "normal")) q.set(MODE, "1"); return "./?" + q.toString(); }
 
+  function alHtml(a, li) {
+    var A = window.MK_ALERG;
+    if (!A || !Array.isArray(a) || !a.length) return "";
+    return '<span class="al" aria-label="' + esc(A.titulo[li] || A.titulo[0]) + '">' + a.map(function (k) { var l = A.lab[k]; return l ? "<i>" + esc(l[li] || l[0]) + "</i>" : ""; }).join("") + "</span>";
+  }
   function render() {
     var li = IDX[lang];
     document.documentElement.lang = lang === "zh" ? "zh-CN" : lang;
@@ -53,12 +58,14 @@
       c.pratos.forEach(function (p) {
         var tr = p[li] || p[0], orig = li ? p[0] : "";
         var hay = norm(p.slice(0, 8).join(" "));
-        html += '<li class="em-dish" data-q="' + esc(hay) + '"><div><b>' + esc(tr) + "</b>" + (orig && orig !== tr ? "<em>" + esc(orig) + "</em>" : "") + "</div>" + (pricesOk && typeof p[8] === "number" ? '<span class="em-price">' + price(p[8], p[9]) + "</span>" : "") + "</li>";
+        html += '<li class="em-dish" data-q="' + esc(hay) + '"><div><b>' + esc(tr) + "</b>" + (orig && orig !== tr ? "<em>" + esc(orig) + "</em>" : "") + alHtml(p[10], li) + "</div>" + (pricesOk && typeof p[8] === "number" ? '<span class="em-price">' + price(p[8], p[9]) + "</span>" : "") + "</li>";
       });
       sec.innerHTML = html + "</ul>";
       list.appendChild(sec);
     });
-    var foot = [t("allergens"), pricesOk ? t("priceNote") : t("noPrices")];
+    var foot = [t("allergens")];
+    if (window.MK_ALERG && cats.some(function (c) { return c.pratos.some(function (p) { return Array.isArray(p[10]); }); })) foot.push(window.MK_ALERG.nota[li] || window.MK_ALERG.nota[0]);
+    foot.push(pricesOk ? t("priceNote") : t("noPrices"));
     if (C.ementa.atualizadaEm) foot.push(t("updated", { d: new Intl.DateTimeFormat(LOCALE[lang], { dateStyle: "long" }).format(new Date(C.ementa.atualizadaEm + "T12:00:00")) }));
     $("#emFoot").innerHTML = foot.map(esc).join("<br>");
     $("#emEmpty").textContent = t("noResults");

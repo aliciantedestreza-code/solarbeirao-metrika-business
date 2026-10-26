@@ -1,14 +1,9 @@
-/* MÉTRIKA ID Pro · Solar Beirão · camada "ao vivo" (prato do dia, preços, esgotados, pratos novos).
+/* MÉTRIKA ID Business · camada "ao vivo" (prato do dia, preços, esgotados, pratos novos).
    Lê o que o restaurante publica no MÉTRIKA Business e aplica ao config.js antes de arrancar o motor.
    Se a rede falhar, o ID abre na mesma com a última versão conhecida (ou com a ementa base). */
 (function () {
   "use strict";
-  var PRO = {
-    slug: "solarbeirao-cacilhas",
-    api: "https://dnwijjgefcxurdffabyq.supabase.co/rest/v1/rpc/",
-    key: "sb_publishable_Cb2obpnoRx-4W8DjCXKwkA_psuaaOgt",
-    timeout: 3500
-  };
+  var PRO = Object.assign({ timeout: 3500 }, window.METRIKA_PRO || {});   // vem de pro-config.js
   var C = window.METRIKA_CONFIG;
   var me = document.currentScript;
   var engine = me && me.getAttribute("data-engine");
@@ -17,7 +12,7 @@
   var LOC = { pt: "pt-PT", en: "en-GB", fr: "fr-FR", es: "es-ES", de: "de-DE", it: "it-IT", zh: "zh-CN", ja: "ja-JP" };
 
   var T = {
-    hoje:    ["Hoje no Solar Beirão", "Today at Solar Beirão", "Aujourd’hui au Solar Beirão", "Hoy en Solar Beirão", "Heute im Solar Beirão", "Oggi al Solar Beirão", "Solar Beirão 今日推荐", "本日の Solar Beirão"],
+    hoje:    ["Hoje no {n}", "Today at {n}", "Aujourd’hui au {n}", "Hoy en {n}", "Heute im {n}", "Oggi al {n}", "{n} 今日推荐", "本日の {n}"],
     kicker:  ["Fresco de hoje", "Fresh today", "Frais du jour", "Fresco de hoy", "Heute frisch", "Fresco di oggi", "今日新鲜", "本日のおすすめ"],
     atual:   ["Atualizado hoje às {t}", "Updated today at {t}", "Mis à jour aujourd’hui à {t}", "Actualizado hoy a las {t}", "Heute um {t} aktualisiert", "Aggiornato oggi alle {t}", "今天 {t} 更新", "本日 {t} 更新"],
     esg:     ["Esgotado", "Sold out", "Épuisé", "Agotado", "Ausverkauft", "Esaurito", "已售罄", "売り切れ"],
@@ -48,13 +43,26 @@
   function money(v) { return new Intl.NumberFormat(LOC[lang()], { style: "currency", currency: "EUR", minimumFractionDigits: 2 }).format(v); }
   function num(v) { return typeof v === "number" && isFinite(v) && v >= 0 ? v : null; }
 
+  /* Alergénios: só entram os que o dono validou (ok:true); devolve a lista de códigos válidos ou null */
+  function alOf(x) {
+    var A = window.MK_ALERG;
+    if (!A || !x || x.ok !== true || !Array.isArray(x.a)) return null;
+    return x.a.filter(function (c) { return A.codes.indexOf(c) > -1; });
+  }
+  function alChips(a) {
+    var A = window.MK_ALERG, li = IDX[lang()];
+    if (!A || !Array.isArray(a) || !a.length) return "";
+    return '<span class="al">' + a.filter(function (c) { return A.lab[c]; }).map(function (c) { return "<i>" + esc(A.lab[c][li] || A.lab[c][0]) + "</i>"; }).join("") + "</span>";
+  }
+
   /* ---------- 1. Aplicar alterações à ementa (antes do motor arrancar) ---------- */
   var HAS_NEW = false, NEW_MISS = {};   // NEW_MISS[i] = há pratos novos sem tradução na língua i
   function applyMenu(state, updatedAt, rev) {
-    var E = (state && state.ementa) || {}, alt = E.alt || {}, novos = E.novos || [];
+    var E = (state && state.ementa) || {}, alt = E.alt || {}, novos = E.novos || [], AL = E.al || {};
     if (!C || !C.ementa || !C.ementa.categorias) return;
     C.ementa.categorias.forEach(function (c) {
       c.pratos = c.pratos.filter(function (p) {
+        var ok = alOf(AL[c.id + "|" + p[0]]); if (ok) p[10] = ok;
         var a = alt[c.id + "|" + p[0]];
         if (!a) return true;
         if (a.o) return false;
@@ -74,6 +82,7 @@
       var row = [String(n.n).slice(0, 140)];
       for (var k = 0; k < 7; k++) row.push(String(t[k] || "").slice(0, 140));   // EN, FR, ES, DE, IT, ZH, JA
       row.push(num(n.p));
+      var okn = alOf(AL[n.c + "|" + n.n]); if (okn) { row[9] = null; row[10] = okn; }
       for (var i = 1; i < 8; i++) if (!row[i]) NEW_MISS[i] = true;
       if (n.e) { for (var j = 0; j < 8; j++) if (row[j]) row[j] += SOLD_MARK; row[8] = null; }
       c.pratos.push(row); HAS_NEW = true;
@@ -122,16 +131,17 @@
         '<span class="pro-tipo">' + esc(tipo) + "</span>" +
         '<span class="pro-row"><b>' + esc(nm) + "</b>" +
         (x.e ? '<span class="pro-sold">' + esc(tr(T.esg)) + "</span>" : p != null ? '<span class="pro-price">' + esc(money(p)) + "</span>" : "") +
-        "</span>" + (ds ? '<span class="pro-desc">' + esc(ds) + "</span>" : "") + "</li>";
+        "</span>" + (ds ? '<span class="pro-desc">' + esc(ds) + "</span>" : "") + alChips((x.al || []).filter(function () { return true; })) + "</li>";
     }).join("");
     var when = h.fixo ? "" : (h.publicadoEm || UPDATED) ? tr(T.atual).replace("{t}", hhmm(h.publicadoEm || UPDATED)) : "";
     var note = h.nota ? '<p class="pro-note">' + esc(pick(h.nota, h.ntr)) + "</p>" : "";
+    var alNote = window.MK_ALERG && window.MK_ALERG.geral ? '<p class="pro-pt pro-al">' + esc(window.MK_ALERG.geral[IDX[L]] || window.MK_ALERG.geral[0]) + "</p>" : "";
     var ptNote = missing ? '<p class="pro-pt">' + esc(tr(T.ptNota)) + "</p>" : "";
     var ctas = onMenu ? "" : '<div class="pro-cta"><a class="btn btn-gold" href="#reservas">' + esc(tr(T.reservar)) + "</a></div>";
     box.innerHTML = '<div class="wrap"><div class="pro-card">' +
       '<div class="pro-head"><span class="pro-live" aria-hidden="true"></span><span class="pro-kick">' + esc(tr(T.kicker)) + "</span></div>" +
-      '<h2 class="pro-title">' + esc(tr(T.hoje)) + "</h2>" +
-      '<ul class="pro-list">' + items + "</ul>" + note + ptNote +
+      '<h2 class="pro-title">' + esc(tr(T.hoje).replace('{n}', (C.negocio && C.negocio.nome) || '')) + "</h2>" +
+      '<ul class="pro-list">' + items + "</ul>" + note + ptNote + alNote +
       (when ? '<p class="pro-when">' + esc(when) + "</p>" : "") + ctas + "</div></div>";
     box.hidden = false;
   }
@@ -145,7 +155,7 @@
     n.textContent = tr(T.novoPt);
   }
 
-  /* ---------- 4. Estilos (cores do Solar Beirão vêm do styles.css) ---------- */
+  /* ---------- 4. Estilos (as cores vêm do styles.css do restaurante) ---------- */
   var css = "" +
     ".pro-hoje{padding:24px 0 4px}.em-body .pro-hoje{padding:10px 0 4px}" +
     ".pro-hoje .wrap{max-width:640px;margin:0 auto;padding:0 16px}" +

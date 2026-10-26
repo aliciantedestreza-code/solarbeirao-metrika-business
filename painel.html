@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#7a1f2b">
-<title>MÉTRIKA Business · Solar Beirão</title>
+<title>MÉTRIKA Business</title>
 <link rel="icon" href="favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Painel Solar">
+<meta name="apple-mobile-web-app-title" content="Painel">
 <link rel="preconnect" href="https://dnwijjgefcxurdffabyq.supabase.co" crossorigin>
 <style>
 @font-face{font-family:"DM Sans";src:url(assets/fonts/dm-sans-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
@@ -100,7 +100,12 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
 .addrow{padding:12px 16px 16px;border-top:1px solid var(--line)}
 .addrow .grid2{margin-top:0}
 .new-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--gold);color:#1b1407;border-radius:999px;padding:2px 8px;margin-right:6px;vertical-align:middle}
-.trd{margin-top:10px}.trd summary{min-height:44px;display:flex;align-items:center;font-size:14px;font-weight:700;color:var(--navy);cursor:pointer}.trd .field{margin-top:4px}.trl{display:block;margin-top:10px;font-size:13px;font-weight:700;color:var(--muted)}
+.trd{margin-top:10px}.trd summary{min-height:44px;display:flex;align-items:center;font-size:14px;font-weight:700;color:var(--navy);cursor:pointer}.trd .field{margin-top:4px}.alx{margin-top:8px}.alx>summary{min-height:44px;display:flex;align-items:center;cursor:pointer;list-style:none}.alx>summary::-webkit-details-marker{display:none}
+.altag{font-size:12px;font-weight:700;padding:6px 11px;border-radius:99px;line-height:1.25}.altag.ok{background:#e6f5ec;color:#1f6b3d}.altag.pend{background:#fff1d6;color:#8a5a00}
+.alg{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.alg .tbtn[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.alprog{padding:14px 16px;margin-bottom:12px}.alprog b{display:block;font-size:15px}.alprog p{margin:4px 0 0;font-size:13px;color:var(--muted)}
+.albar{height:8px;border-radius:99px;background:var(--line);margin-top:8px;overflow:hidden}.albar i{display:block;height:100%;background:var(--ok);border-radius:99px}
+.trl{display:block;margin-top:10px;font-size:13px;font-weight:700;color:var(--muted)}
 .grp-h{margin:18px 4px 4px;font:700 12px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--gold-d)}
 /* Barra de publicar */
 .bar{position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));z-index:30;padding:10px 16px;pointer-events:none}
@@ -129,7 +134,7 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
   <form class="login-card" id="loginForm" novalidate>
     <img src="assets/img/logo-200.webp" alt="" width="72" height="72">
     <h1>MÉTRIKA Business</h1>
-    <p>Solar Beirão · Cacilhas</p>
+    <p data-neg="login"></p>
     <label class="lb" for="pass" style="text-align:left">Password</label>
     <div class="pw"><input class="field" id="pass" type="password" autocomplete="current-password" required><button type="button" id="pwShow">Mostrar</button></div>
     <p class="err" id="loginErr" role="alert" hidden></p>
@@ -143,7 +148,7 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
 <div id="vApp" hidden>
   <header class="top"><div class="wrap">
     <img src="assets/img/logo-200.webp" alt="">
-    <div><b>Solar Beirão</b><small>MÉTRIKA Business</small></div>
+    <div><b data-neg="nome"></b><small>MÉTRIKA Business</small></div>
     <nav class="sw2" aria-label="Alternar"><a href="./">ID</a><span class="on">Business</span></nav>
   </div></header>
 
@@ -172,6 +177,7 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
     <section class="wrap" id="tEmenta" hidden>
       <h2 class="h">Ementa</h2>
       <p class="sub">Altera preços, marca esgotados, esconde ou acrescenta pratos. Os clientes veem a mudança assim que guardares.</p>
+      <div class="card alprog" id="alProg"></div>
       <div class="search"><input class="field" id="emQ" type="search" placeholder="Procurar prato…" autocomplete="off" aria-label="Procurar prato"></div>
       <div id="emCats"></div>
     </section>
@@ -213,12 +219,16 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="config.js"></script>
+<script src="pro-config.js"></script>
+<script src="alergenios.js"></script>
+<script src="sugestoes-alergenios.js"></script>
 <script>
 (function () {
   "use strict";
-  var SLUG = "solarbeirao-cacilhas";
-  var API = "https://dnwijjgefcxurdffabyq.supabase.co/rest/v1/rpc/";
-  var KEY = "sb_publishable_Cb2obpnoRx-4W8DjCXKwkA_psuaaOgt";
+  var PROC = window.METRIKA_PRO || {}, NEG = (window.METRIKA_CONFIG && window.METRIKA_CONFIG.negocio) || {};
+  var SLUG = PROC.slug;
+  var API = PROC.api;
+  var KEY = PROC.key;
   var TOK = "mk_pro_tok_" + SLUG;
   var C = window.METRIKA_CONFIG || { ementa: { categorias: [] } };
   var TIPOS = [["prato", "Prato do dia"], ["menu", "Menu do dia"], ["peixe", "Peixe fresco do dia"], ["marisco", "Marisco do dia"], ["sopa", "Sopa do dia"], ["sobremesa", "Sobremesa do dia"], ["chef", "Sugestão do chef"]];
@@ -227,10 +237,14 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
   var LN = [["EN", "English"], ["FR", "Français"], ["ES", "Español"], ["DE", "Deutsch"], ["IT", "Italiano"], ["ZH", "中文"], ["JA", "日本語"]];
   var FN = API.replace("/rest/v1/rpc/", "/functions/v1/idpro-traduzir");
   var $ = function (s) { return document.querySelector(s); };
+  document.title = "MÉTRIKA Business · " + (NEG.nome || "");
+  document.querySelectorAll("[data-neg=nome]").forEach(function (e) { e.textContent = NEG.nome || ""; });
+  document.querySelectorAll("[data-neg=login]").forEach(function (e) { e.textContent = [NEG.nome, NEG.morada && NEG.morada.local].filter(Boolean).join(" · "); });
+  if (PROC.cores) { var rs = document.documentElement.style, cm = { navy: "--navy", navy2: "--navy-2", deep: "--deep", gold: "--gold", goldD: "--gold-d" }; Object.keys(cm).forEach(function (k) { if (PROC.cores[k]) rs.setProperty(cm[k], PROC.cores[k]); }); }
 
   /* ---------- Tradução automática (PT → 7 línguas), feita no servidor ---------- */
   function translate(texts) {
-    return fetch(FN, { method: "POST", headers: { apikey: KEY, "Content-Type": "application/json" }, body: JSON.stringify({ token: token, textos: texts }), cache: "no-store" })
+    return fetch(FN, { method: "POST", headers: { apikey: KEY, "Content-Type": "application/json" }, body: JSON.stringify({ token: token, textos: texts, tipo: (NEG.tipo && NEG.tipo.pt) || "" }), cache: "no-store" })
       .then(function (r) {
         return r.json().catch(function () { return {}; }).then(function (j) {
           if (!r.ok || j.erro || !Array.isArray(j.traducoes) || j.traducoes.length !== texts.length) throw new Error(j.erro || "rede");
@@ -289,13 +303,49 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
       .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error((j && j.message) || "rede"); return j; }); });
   }
 
+  /* ---------- Alergénios (14 do Reg. UE 1169/2011) · o dono valida, só o validado aparece ao cliente ---------- */
+  var ALG = window.MK_ALERG || { codes: [], lab: {} }, SUG = window.MK_ALERG_SUG || {};
+  function alLabel(c) { return (ALG.lab[c] || [c])[0]; }
+  function alState(k) { var x = draft && draft.ementa.al && draft.ementa.al[k]; return x && x.ok === true && Array.isArray(x.a) ? x : null; }
+  function alPicker(initial, onChange) {
+    var sel = initial.slice(), wrap = document.createElement("div"); wrap.className = "alg";
+    ALG.codes.forEach(function (c) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "tbtn"; b.textContent = alLabel(c); b.setAttribute("aria-pressed", sel.indexOf(c) > -1 ? "true" : "false");
+      b.onclick = function () { var i = sel.indexOf(c); if (i > -1) sel.splice(i, 1); else sel.push(c); b.setAttribute("aria-pressed", i > -1 ? "false" : "true"); if (onChange) onChange(); };
+      wrap.appendChild(b);
+    });
+    return { el: wrap, get: function () { return ALG.codes.filter(function (c) { return sel.indexOf(c) > -1; }); } };
+  }
+  function setAl(k, arr) { draft.ementa.al = draft.ementa.al || {}; draft.ementa.al[k] = { a: arr, ok: true }; menuChanged(); updateProg(); }
+  function alEl(k) {
+    var st = alState(k), sug = SUG[k] || [], d = document.createElement("details"); d.className = "alx";
+    d.innerHTML = "<summary>" + (st ? '<span class="altag ok">Alergénios ✓ ' + esc(st.a.length ? st.a.map(alLabel).join(", ") : "nenhum") + "</span>" : '<span class="altag pend">Alergénios por validar</span>') + "</summary>";
+    var pk = alPicker(st ? st.a : sug);
+    var hint = document.createElement("p"); hint.className = "rb";
+    hint.textContent = st ? "Marca o que o prato leva e confirma." : sug.length ? "Sugestão feita a partir do nome do prato. Confirma com a cozinha antes de aceitar." : "Sem sugestão. Marca o que o prato leva, ou escolhe «Sem alergénios».";
+    var act = document.createElement("div"); act.className = "rc";
+    act.innerHTML = '<button type="button" class="btn btn-gold btn-sm">Confirmar</button><button type="button" class="tbtn">Sem alergénios</button>';
+    act.children[0].onclick = function () { setAl(k, pk.get()); d.replaceWith(alEl(k)); toast("Alergénios confirmados ✓", "ok"); };
+    act.children[1].onclick = function () { setAl(k, []); d.replaceWith(alEl(k)); toast("Marcado: sem alergénios ✓", "ok"); };
+    d.appendChild(hint); d.appendChild(pk.el); d.appendChild(act);
+    return d;
+  }
+  function updateProg() {
+    var box = $("#alProg"); if (!box || !draft) return;
+    var tot = 0, ok = 0;
+    C.ementa.categorias.forEach(function (c) { c.pratos.forEach(function (p) { var k = c.id + "|" + p[0], a = draft.ementa.alt[k]; if (a && a.o) return; tot++; if (alState(k)) ok++; }); });
+    draft.ementa.novos.forEach(function (n) { tot++; if (alState(n.c + "|" + n.n)) ok++; });
+    var pct = tot ? Math.round(ok * 100 / tot) : 0;
+    box.innerHTML = "<b>Alergénios validados: " + ok + " de " + tot + " pratos</b><div class=\"albar\"><i style=\"width:" + pct + "%\"></i></div><p>Só os pratos validados mostram alergénios aos clientes. Nos outros, o site diz «pergunte à equipa». A lei obriga a informar: valida com a cozinha.</p>";
+  }
+
   /* ---------- Estado ---------- */
   var token = store(TOK), saved = null, draft = null, rev = 0, updatedAt = null, dirtyHoje = false, dirtyMenu = false, busy = false;
-  function blank() { return { v: 1, hoje: { data: null, fixo: false, itens: [], nota: "", publicadoEm: null }, ementa: { alt: {}, novos: [] }, recentes: [] }; }
+  function blank() { return { v: 1, hoje: { data: null, fixo: false, itens: [], nota: "", publicadoEm: null }, ementa: { alt: {}, novos: [], al: {} }, recentes: [] }; }
   function normalize(s) {
     var b = blank(); s = s && typeof s === "object" ? s : {};
     b.hoje = Object.assign(b.hoje, s.hoje || {}); b.hoje.itens = Array.isArray(b.hoje.itens) ? b.hoje.itens : [];
-    b.ementa = Object.assign(b.ementa, s.ementa || {}); b.ementa.alt = b.ementa.alt || {}; b.ementa.novos = Array.isArray(b.ementa.novos) ? b.ementa.novos : [];
+    b.ementa = Object.assign(b.ementa, s.ementa || {}); b.ementa.alt = b.ementa.alt || {}; b.ementa.novos = Array.isArray(b.ementa.novos) ? b.ementa.novos : []; b.ementa.al = b.ementa.al && typeof b.ementa.al === "object" && !Array.isArray(b.ementa.al) ? b.ementa.al : {};
     b.recentes = Array.isArray(s.recentes) ? s.recentes : [];
     return b;
   }
@@ -362,6 +412,11 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
       ins[2].oninput = function () { var v = parsePrice(ins[2].value); it.p = isNaN(v) ? it.p : v; ins[2].style.borderColor = isNaN(v) ? "var(--bad)" : ""; touchHoje(); };
       ins[3].onchange = function () { it.e = ins[3].checked; touchHoje(); };
       c.querySelector(".x").onclick = function () { H.itens.splice(i, 1); touchHoje(); renderHoje(); };
+      var hd = document.createElement("details"); hd.className = "alx";
+      function hs() { return "Alergénios deste prato: " + (it.al && it.al.length ? it.al.map(alLabel).join(", ") : "não indicados (opcional)"); }
+      hd.innerHTML = '<summary><span class="altag ' + (it.al && it.al.length ? "ok" : "pend") + '">' + esc(hs()) + "</span></summary>";
+      var hp = alPicker(it.al || [], function () { it.al = hp.get(); var t = hd.querySelector(".altag"); t.textContent = hs(); t.className = "altag " + (it.al.length ? "ok" : "pend"); touchHoje(); });
+      hd.appendChild(hp.el); c.appendChild(hd);
       if (it.n && it.trSrc === srcOf(it) && okTr(it.tr)) c.appendChild(trEditor(it, touchHoje));
       else if (it.n) { var hint = document.createElement("p"); hint.className = "rb"; hint.textContent = "Traduzido sozinho para 7 línguas ao publicar."; c.appendChild(hint); }
       box.appendChild(c);
@@ -397,6 +452,9 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
     Object.keys(A).concat(Object.keys(B)).forEach(function (k) { keys[k] = 1; });
     Object.keys(keys).forEach(function (k) { if (JSON.stringify(A[k] || null) !== JSON.stringify(B[k] || null)) n++; });
     if (JSON.stringify(saved.ementa.novos) !== JSON.stringify(draft.ementa.novos)) n++;
+    var L1 = saved.ementa.al || {}, L2 = draft.ementa.al || {}, lk = {};
+    Object.keys(L1).concat(Object.keys(L2)).forEach(function (k) { lk[k] = 1; });
+    Object.keys(lk).forEach(function (k) { if (JSON.stringify(L1[k] || null) !== JSON.stringify(L2[k] || null)) n++; });
     return n || 1;
   }
   function setAlt(k, patch, base) {
@@ -415,7 +473,7 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
     return out;
   }
   function renderEmenta() {
-    var box = $("#emCats"), q = norm($("#emQ").value.trim()); box.innerHTML = "";
+    var box = $("#emCats"), q = norm($("#emQ").value.trim()); box.innerHTML = ""; updateProg();
     var anyShown = false, lastG = null;
     orderedCats().forEach(function (gc) {
       var c = gc[1];
@@ -430,6 +488,17 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
       d.innerHTML = "<summary><span>" + esc(c.nome[0]) + (changed ? "<em>" + changed + "</em>" : "") + "</span><small>" + (c.pratos.length + draft.ementa.novos.filter(function (n) { return n.c === c.id; }).length) + "</small></summary>";
       rows.forEach(function (p) { d.appendChild(rowEl(c, p)); });
       novos.forEach(function (n) { d.appendChild(novoEl(n)); });
+      var pend = c.pratos.filter(function (p) { var k = keyOf(c, p); return !alState(k) && (SUG[k] || []).length; });
+      if (!q && pend.length) {
+        var cb = document.createElement("button"); cb.type = "button"; cb.className = "btn btn-line btn-sm mt"; cb.style.margin = "10px 16px 0"; cb.textContent = "Confirmar as " + pend.length + " sugestões desta secção";
+        var armed = 0;
+        cb.onclick = function () {
+          if (Date.now() > armed) { armed = Date.now() + 4500; cb.textContent = "Já confirmaste com a cozinha? Toca outra vez"; setTimeout(function () { cb.textContent = "Confirmar as " + pend.length + " sugestões desta secção"; }, 4500); return; }
+          pend.forEach(function (p) { var k = keyOf(c, p); draft.ementa.al = draft.ementa.al || {}; draft.ementa.al[k] = { a: (SUG[k] || []).slice(), ok: true }; });
+          menuChanged(); openCats[c.id] = true; renderEmenta(); toast(pend.length + " pratos validados ✓", "ok");
+        };
+        d.appendChild(cb);
+      }
       if (!q) d.appendChild(addEl(c));
       box.appendChild(d);
     });
@@ -450,7 +519,8 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
     };
     bs[0].onclick = function () { setAlt(k, { e: !(draft.ementa.alt[k] || {}).e }, base); refreshRow(); };
     bs[1].onclick = function () { setAlt(k, { o: !(draft.ementa.alt[k] || {}).o }, base); refreshRow(); };
-    function refreshRow() { var n = rowEl(c, p); r.replaceWith(n); updateBadge(n, c); }
+    function refreshRow() { var n = rowEl(c, p); r.replaceWith(n); updateBadge(n, c); updateProg(); }
+    r.appendChild(alEl(k));
     return r;
   }
   function updateBadge(node, c) {
@@ -469,19 +539,25 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
     bs[0].onclick = function () { n.e = !n.e; menuChanged(); renderEmenta(); };
     bs[1].onclick = function () { draft.ementa.novos = draft.ementa.novos.filter(function (x) { return x !== n; }); menuChanged(); renderEmenta(); };
     if (okTr(n.tr)) r.appendChild(trEditor(n, menuChanged));
+    r.appendChild(alEl(n.c + "|" + n.n));
     return r;
   }
   function addEl(c) {
     var r = document.createElement("div"); r.className = "addrow";
     r.innerHTML = '<div class="grid2"><input class="field" maxlength="120" aria-label="Nome do novo prato" placeholder="Novo em ' + esc(c.nome[0].toLowerCase()) + '"><div class="euro"><input class="field" inputmode="decimal" placeholder="Preço" aria-label="Preço"></div></div>' +
       '<p class="rb">Escreve só em português. O painel traduz para as outras 7 línguas.</p>' +
+      '<details class="alx"><summary><span class="altag pend">Alergénios (indica o que o prato leva)</span></summary><div class="alslot"></div><div class="rc"><button type="button" class="tbtn nonebtn" aria-pressed="false">Sem alergénios</button></div></details>' +
       '<button type="button" class="btn btn-line btn-sm mt">+ Adicionar</button>';
-    var ins = r.querySelectorAll(".grid2 input"), btn = r.querySelector("button");
+    var ins = r.querySelectorAll(".grid2 input"), btn = r.querySelector("button.btn");
+    var np = alPicker([]), nonebtn = r.querySelector(".nonebtn"); r.querySelector(".alslot").appendChild(np.el);
+    nonebtn.onclick = function () { nonebtn.setAttribute("aria-pressed", nonebtn.getAttribute("aria-pressed") === "true" ? "false" : "true"); };
     btn.onclick = function () {
       var nm = ins[0].value.trim(), v = parsePrice(ins[1].value);
       if (!nm) { ins[0].focus(); toast("Escreve o nome do prato.", "bad"); return; }
       if (isNaN(v)) { ins[1].focus(); toast("Preço inválido. Ex.: 12,50", "bad"); return; }
       var novo = { id: Date.now().toString(36), c: c.id, n: nm, p: v, e: false };
+      var chosen = np.get(), none = nonebtn.getAttribute("aria-pressed") === "true";
+      if (chosen.length || none) { draft.ementa.al = draft.ementa.al || {}; draft.ementa.al[c.id + "|" + nm] = { a: none ? [] : chosen, ok: true }; }
       btn.disabled = true; btn.textContent = "A traduzir…";
       translate([nm]).then(function (res) { novo.tr = res[0]; })
         .catch(function () { toast("Adicionado só em português. Traduz-se ao guardar.", "bad"); })
@@ -496,7 +572,7 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
     var b = this;
     if (Date.now() > resetArmed) { resetArmed = Date.now() + 4000; b.textContent = "Tens a certeza? Toca outra vez"; setTimeout(function () { b.textContent = "Repor ementa original"; }, 4000); return; }
     resetArmed = 0; b.textContent = "Repor ementa original";
-    draft.ementa = { alt: {}, novos: [] }; save("menu");
+    draft.ementa = { alt: {}, novos: [], al: draft.ementa.al || {} }; save("menu");
   };
 
   /* ---------- Barra de publicar ---------- */
@@ -523,7 +599,7 @@ details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
     var next = clone(saved);
     if (what === "hoje" || what === "limpar") {
       var H = clone(draft.hoje);
-      H.itens = H.itens.filter(function (x) { return x.n; }).map(function (x) { var o = { t: x.t || "prato", n: x.n, d: x.d || "", p: x.p == null ? null : x.p, e: !!x.e }; if (x.tr) { o.tr = x.tr; o.trSrc = x.trSrc; } if (x.td) o.td = x.td; return o; });
+      H.itens = H.itens.filter(function (x) { return x.n; }).map(function (x) { var o = { t: x.t || "prato", n: x.n, d: x.d || "", p: x.p == null ? null : x.p, e: !!x.e }; if (x.tr) { o.tr = x.tr; o.trSrc = x.trSrc; } if (x.td) o.td = x.td; if (x.al && x.al.length) o.al = x.al; return o; });
       if (what === "hoje") {
         if (!H.itens.length) { toast("Acrescenta pelo menos um prato com nome.", "bad"); return; }
         H.data = today(); H.publicadoEm = new Date().toISOString();

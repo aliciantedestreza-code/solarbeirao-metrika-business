@@ -259,3 +259,7 @@ input[type=date].field{line-height:50px}
 .hero-slogan{font-weight:400}
 .actions{grid-template-columns:repeat(3,1fr);row-gap:10px}
 @media (min-width:760px){.actions{grid-template-columns:repeat(6,1fr)}}
+
+/* Alergénios validados pelo restaurante */
+.al{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.al i{font-style:normal;font-size:11px;font-weight:700;line-height:1;padding:4px 8px;border-radius:99px;background:rgba(122,31,43,.08);color:var(--navy,#7a1f2b);letter-spacing:.01em}

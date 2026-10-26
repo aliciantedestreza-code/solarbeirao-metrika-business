@@ -10,7 +10,8 @@ window.METRIKA_CONFIG = {
 
   negocio: {
     nome: "Solar Beirão",
-    nomeCompleto: "Solar Beirão Actividades Hoteleiras, Lda.",
+    nomeCompleto: "Solar Beirão Marisqueira",
+    razaoSocial: "Solar Beirão Actividades Hoteleiras, Lda.",   // nome legal da empresa (rodapé e Política de Privacidade)
     tipo: {"pt": "Marisqueira · Peixe, marisco e cozinha portuguesa", "en": "Seafood restaurant · Fish, shellfish & Portuguese cuisine", "fr": "Restaurant de fruits de mer · Poissons et cuisine portugaise", "es": "Marisquería · Pescado, marisco y cocina portuguesa", "de": "Meeresfrüchte-Restaurant · Fisch & portugiesische Küche", "it": "Ristorante di mare · Pesce, crostacei e cucina portoghese", "zh": "海鲜餐厅 · 鲜鱼、海鲜与葡式料理", "ja": "シーフードレストラン · 魚介とポルトガル料理"},
     slogan: {"pt": "Marisco e peixe fresco todos os dias.", "en": "Fresh seafood and fish, every day.", "fr": "Fruits de mer et poisson frais, tous les jours.", "es": "Marisco y pescado fresco, todos los días.", "de": "Frische Meeresfrüchte und Fisch, jeden Tag.", "it": "Frutti di mare e pesce fresco, ogni giorno.", "zh": "每日新鲜海鲜与鲜鱼。", "ja": "毎日新鮮な魚介をお届けします。"},
     telefone: "+351212766019",

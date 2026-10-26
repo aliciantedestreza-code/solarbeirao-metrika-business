@@ -192,6 +192,13 @@
     var s = new Intl.NumberFormat(LOCALE[lang], { style: "currency", currency: "EUR", minimumFractionDigits: 2 }).format(p);
     return esc(s) + (unit ? "<small>/" + esc(unit) + "</small>" : "");
   }
+  /* Alergénios validados pelo restaurante (p[10]); sem validação não mostra nada */
+  function alHtml(a, li) {
+    var A = window.MK_ALERG;
+    if (!A || !Array.isArray(a) || !a.length) return "";
+    return '<span class="al" aria-label="' + esc(A.titulo[li] || A.titulo[0]) + '">' + a.map(function (k) { var l = A.lab[k]; return l ? "<i>" + esc(l[li] || l[0]) + "</i>" : ""; }).join("") + "</span>";
+  }
+  function hasAl(cats) { return cats.some(function (c) { return c.pratos.some(function (p) { return Array.isArray(p[10]); }); }); }
   function renderMenu() {
     var M = C.ementa, li = LANG_IDX[lang];
     $("#menuTitle").textContent = t("menuTitle");
@@ -217,7 +224,7 @@
       c.pratos.forEach(function (p) {
         var tr = p[li] || p[0], orig = li ? p[0] : "";
         var pr = pricesOk && typeof p[8] === "number" ? '<span class="dish-price">' + price(p[8], p[9]) + "</span>" : "";
-        ul.appendChild(el("li", { class: "dish" }, '<span class="dish-name"><b>' + esc(tr) + "</b>" + (orig && orig !== tr ? "<em>" + esc(orig) + "</em>" : "") + "</span>" + pr));
+        ul.appendChild(el("li", { class: "dish" }, '<span class="dish-name"><b>' + esc(tr) + "</b>" + (orig && orig !== tr ? "<em>" + esc(orig) + "</em>" : "") + alHtml(p[10], li) + "</span>" + pr));
       });
       d.appendChild(ul);
       d.addEventListener("toggle", syncChips);
@@ -225,6 +232,7 @@
     });
     syncChips();
     var foot = [t("allergens")];
+    if (window.MK_ALERG && hasAl(M.categorias)) foot.push(window.MK_ALERG.nota[li] || window.MK_ALERG.nota[0]);
     if (pricesOk) foot.push(t("priceNote")); else foot.push(t("noPrices"));
     if (M.atualizadaEm) foot.push(t("updated", { d: new Intl.DateTimeFormat(LOCALE[lang], { dateStyle: "long" }).format(new Date(M.atualizadaEm + "T12:00:00")) }));
     $("#menuFoot").innerHTML = foot.map(esc).join("<br>");
@@ -341,7 +349,7 @@
     var L = C.links, N = C.negocio, F = $("#footSocial"); F.innerHTML = "";
     ["instagram", "facebook", "tripadvisor"].forEach(function (k) { if (L[k]) F.appendChild(el("a", { href: L[k], target: "_blank", rel: "noopener", "aria-label": BRAND[k][0] }, ICON[BRAND[k][1]])); });
     $("#lrLink").href = L.livroReclamacoes || "https://www.livroreclamacoes.pt/inicio";
-    $("#footLegal").textContent = [N.nomeCompleto, N.nif ? "NIF " + N.nif : "", N.morada.rua + ", " + N.morada.codigoPostal + " " + N.morada.cidade].filter(Boolean).join(" · ");
+    $("#footLegal").textContent = [N.razaoSocial || N.nomeCompleto, N.nif ? "NIF " + N.nif : "", N.morada.rua + ", " + N.morada.codigoPostal + " " + N.morada.cidade].filter(Boolean).join(" · ");
     if (!N.nif) pending.push("NIF (rodapé e Política de Privacidade)");
     $("#credit").textContent = C.credito || "";
   }

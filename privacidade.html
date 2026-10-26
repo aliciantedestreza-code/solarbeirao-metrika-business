@@ -27,7 +27,7 @@
 <script>
 (function(){var N=METRIKA_CONFIG.negocio,M=N.morada;
 document.getElementById('back').textContent=N.nomeCompleto;
-document.getElementById('resp').textContent='Responsável pelo tratamento: '+N.nomeCompleto+(N.nif?' (NIF '+N.nif+')':'')+', '+M.rua+', '+M.local+', '+M.codigoPostal+' '+M.cidade+'.';
+document.getElementById('resp').textContent='Responsável pelo tratamento: '+(N.razaoSocial||N.nomeCompleto)+(N.nif?' (NIF '+N.nif+')':'')+', '+M.rua+', '+M.local+', '+M.codigoPostal+' '+M.cidade+'.';
 var c=document.getElementById('contact');c.innerHTML='';var a=document.createElement('a');a.href='mailto:'+N.email;a.textContent=N.email;c.appendChild(a);
 document.getElementById('lr').href=METRIKA_CONFIG.links.livroReclamacoes||'https://www.livroreclamacoes.pt/inicio';
 document.title='Política de Privacidade · '+N.nomeCompleto;})();
