@@ -49,7 +49,7 @@
   function num(v) { return typeof v === "number" && isFinite(v) && v >= 0 ? v : null; }
 
   /* ---------- 1. Aplicar alterações à ementa (antes do motor arrancar) ---------- */
-  var HAS_NEW = false;
+  var HAS_NEW = false, NEW_MISS = {};   // NEW_MISS[i] = há pratos novos sem tradução na língua i
   function applyMenu(state, updatedAt, rev) {
     var E = (state && state.ementa) || {}, alt = E.alt || {}, novos = E.novos || [];
     if (!C || !C.ementa || !C.ementa.categorias) return;
@@ -70,8 +70,10 @@
       if (!n || !n.n) return;
       var c = C.ementa.categorias.filter(function (x) { return x.id === n.c; })[0];
       if (!c) return;
-      var row = [String(n.n).slice(0, 140), "", "", "", "", "", "", "", num(n.p)];
-      if (n.e) { row[0] += SOLD_MARK; row[8] = null; }
+      var t = Array.isArray(n.tr) ? n.tr : [];
+      var row = [String(n.n).slice(0, 140), String(t[0] || "").slice(0, 140), String(t[1] || "").slice(0, 140), String(t[2] || "").slice(0, 140), String(t[3] || "").slice(0, 140), "", "", "", num(n.p)];
+      for (var i = 1; i < 8; i++) if (!row[i]) NEW_MISS[i] = true;
+      if (n.e) { for (var j = 0; j < 8; j++) if (row[j]) row[j] += SOLD_MARK; row[8] = null; }
       c.pratos.push(row); HAS_NEW = true;
     });
     if (updatedAt && rev) C.ementa.atualizadaEm = String(updatedAt).slice(0, 10);
@@ -129,7 +131,7 @@
     var foot = document.getElementById("menuFoot") || document.getElementById("emFoot");
     if (!foot) return;
     var n = document.getElementById("proNewNote");
-    if (!HAS_NEW || lang() === "pt") { if (n) n.remove(); return; }
+    if (!HAS_NEW || lang() === "pt" || !NEW_MISS[IDX[lang()]]) { if (n) n.remove(); return; }
     if (!n) { n = document.createElement("p"); n.id = "proNewNote"; n.className = "pro-pt"; foot.parentNode.insertBefore(n, foot); }
     n.textContent = tr(T.novoPt);
   }

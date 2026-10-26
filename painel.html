@@ -82,10 +82,10 @@ input:checked+.sw:after{transform:translateX(20px)}
 /* Ementa */
 .search{position:sticky;top:calc(env(safe-area-inset-top) + 64px);z-index:10;background:var(--sand);padding:8px 0 10px}
 details.cat{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);margin:10px 0;overflow:hidden}
-details.cat summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:56px;padding:12px 16px;font:500 19px/1.2 var(--serif);color:var(--navy);cursor:pointer}
-details.cat summary::-webkit-details-marker{display:none}
-details.cat summary small{font:700 13px var(--sans);color:var(--muted)}
-details.cat summary em{font-style:normal;font:700 12px var(--sans);color:#fff;background:var(--gold-d);border-radius:999px;padding:3px 8px;margin-left:8px}
+details.cat>summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:56px;padding:12px 16px;font:500 19px/1.2 var(--serif);color:var(--navy);cursor:pointer}
+details.cat>summary::-webkit-details-marker{display:none}
+details.cat>summary small{font:700 13px var(--sans);color:var(--muted)}
+details.cat>summary em{font-style:normal;font:700 12px var(--sans);color:#fff;background:var(--gold-d);border-radius:999px;padding:3px 8px;margin-left:8px}
 .row{padding:12px 16px;border-top:1px solid var(--line)}
 .row.chg{background:#fff8f0}
 .row.off .rn{color:var(--muted);text-decoration:line-through}
@@ -100,6 +100,7 @@ details.cat summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
 .addrow{padding:12px 16px 16px;border-top:1px solid var(--line)}
 .addrow .grid2{margin-top:0}
 .new-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--gold);color:#1b1407;border-radius:999px;padding:2px 8px;margin-right:6px;vertical-align:middle}
+.trd{margin-top:10px}.trd summary{min-height:44px;display:flex;align-items:center;font-size:14px;font-weight:700;color:var(--navy);cursor:pointer}.trd .field{margin-top:8px}
 .grp-h{margin:18px 4px 4px;font:700 12px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--gold-d)}
 /* Barra de publicar */
 .bar{position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));z-index:30;padding:10px 16px;pointer-events:none}
@@ -223,6 +224,7 @@ details.cat summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
   var TIPOS = [["prato", "Prato do dia"], ["menu", "Menu do dia"], ["peixe", "Peixe fresco do dia"], ["marisco", "Marisco do dia"], ["sopa", "Sopa do dia"], ["sobremesa", "Sobremesa do dia"], ["chef", "Sugestão do chef"]];
   /* Mesmos grupos do ID público, para o dono encontrar os pratos onde os clientes os veem */
   var GRUPOS = [["Comida", ["especialidades", "marisco", "peixe", "carne", "petiscos", "entradas", "omeletes", "acompanhamentos", "sobremesas"]], ["Vinhos", ["verdes", "brancos", "tintos", "roses", "espumantes", "sangrias", "pressao"]], ["Bebidas e cafetaria", ["aguas", "cervejas", "cafetaria"]], ["Aperitivos, licores e digestivos", ["aperitivos", "licores", "destilados", "aguardentes", "whisky"]]];
+  var LN = [["EN", "English"], ["FR", "Français"], ["ES", "Español"], ["DE", "Deutsch"]];
   var $ = function (s) { return document.querySelector(s); };
 
   function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
@@ -411,7 +413,7 @@ details.cat summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
   }
   function novoEl(n) {
     var r = document.createElement("div"); r.className = "row chg" + (n.e ? " off" : "");
-    r.innerHTML = '<div class="rn"><span class="new-tag">Novo</span>' + esc(n.n) + '</div><div class="rb">Só aparece em português</div>' +
+    r.innerHTML = '<div class="rn"><span class="new-tag">Novo</span>' + esc(n.n) + '</div><div class="rb">' + (n.tr && n.tr.some(Boolean) ? "Traduzido: " + LN.filter(function (l, i) { return n.tr[i]; }).map(function (l) { return l[0]; }).join(", ") : "Só aparece em português") + '</div>' +
       '<div class="rc"><div class="euro"><input class="field" inputmode="decimal" aria-label="Preço" value="' + esc(priceStr(n.p)) + '"></div>' +
       '<button type="button" class="tbtn sold" aria-pressed="' + (n.e ? "true" : "false") + '">Esgotado</button>' +
       '<button type="button" class="tbtn hide">Apagar</button></div>';
@@ -423,13 +425,18 @@ details.cat summary em{font-style:normal;font:700 12px var(--sans);color:#fff;ba
   }
   function addEl(c) {
     var r = document.createElement("div"); r.className = "addrow";
-    r.innerHTML = '<div class="grid2"><input class="field" maxlength="120" aria-label="Nome do novo prato" placeholder="Novo em ' + esc(c.nome[0].toLowerCase()) + '"><div class="euro"><input class="field" inputmode="decimal" placeholder="Preço" aria-label="Preço"></div></div><button type="button" class="btn btn-line btn-sm mt">+ Adicionar</button>';
-    var ins = r.querySelectorAll("input");
+    r.innerHTML = '<div class="grid2"><input class="field" maxlength="120" aria-label="Nome do novo prato" placeholder="Novo em ' + esc(c.nome[0].toLowerCase()) + '"><div class="euro"><input class="field" inputmode="decimal" placeholder="Preço" aria-label="Preço"></div></div>' +
+      '<details class="trd"><summary>Traduções (opcional) · EN, FR, ES, DE</summary>' + LN.map(function (l) { return '<input class="field" maxlength="140" aria-label="Nome em ' + l[1] + '" placeholder="' + l[1] + '">'; }).join("") + "<p class=\"rb\">Sem tradução, o prato aparece em português com um aviso. Italiano, chinês e japonês ficam em português.</p></details>" +
+      '<button type="button" class="btn btn-line btn-sm mt">+ Adicionar</button>';
+    var ins = r.querySelectorAll(".grid2 input"), tri = r.querySelectorAll(".trd input");
     r.querySelector("button").onclick = function () {
       var nm = ins[0].value.trim(), v = parsePrice(ins[1].value);
       if (!nm) { ins[0].focus(); toast("Escreve o nome do prato.", "bad"); return; }
       if (isNaN(v)) { ins[1].focus(); toast("Preço inválido. Ex.: 12,50", "bad"); return; }
-      draft.ementa.novos.push({ id: Date.now().toString(36), c: c.id, n: nm, p: v, e: false });
+      var tr = [].map.call(tri, function (x) { return x.value.trim(); });
+      var novo = { id: Date.now().toString(36), c: c.id, n: nm, p: v, e: false };
+      if (tr.some(Boolean)) novo.tr = tr;
+      draft.ementa.novos.push(novo);
       openCats[c.id] = true; menuChanged(); renderEmenta();
     };
     return r;
