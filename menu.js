@@ -67,6 +67,7 @@
     if (window.MK_ALERG && cats.some(function (c) { return c.pratos.some(function (p) { return Array.isArray(p[10]); }); })) foot.push(window.MK_ALERG.nota[li] || window.MK_ALERG.nota[0]);
     foot.push(pricesOk ? t("priceNote") : t("noPrices"));
     if (C.ementa.atualizadaEm) foot.push(t("updated", { d: new Intl.DateTimeFormat(LOCALE[lang], { dateStyle: "long" }).format(new Date(C.ementa.atualizadaEm + "T12:00:00")) }));
+    if (window.MK_LEGAL) foot = foot.concat(window.MK_LEGAL[lang] || window.MK_LEGAL.pt);
     $("#emFoot").innerHTML = foot.map(esc).join("<br>");
     $("#emEmpty").textContent = t("noResults");
     var D = $("#emDock"); D.innerHTML = "";

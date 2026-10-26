@@ -235,6 +235,7 @@
     if (window.MK_ALERG && hasAl(M.categorias)) foot.push(window.MK_ALERG.nota[li] || window.MK_ALERG.nota[0]);
     if (pricesOk) foot.push(t("priceNote")); else foot.push(t("noPrices"));
     if (M.atualizadaEm) foot.push(t("updated", { d: new Intl.DateTimeFormat(LOCALE[lang], { dateStyle: "long" }).format(new Date(M.atualizadaEm + "T12:00:00")) }));
+    if (window.MK_LEGAL) foot = foot.concat(window.MK_LEGAL[lang] || window.MK_LEGAL.pt);
     $("#menuFoot").innerHTML = foot.map(esc).join("<br>");
     if (!M.precosConfirmados) mark(MODE === "rever" ? cats : null, false, "preços da ementa (transcritos de fotos públicas)");
     if (!M.atualizadaEm) pending.push("data de atualização da ementa");

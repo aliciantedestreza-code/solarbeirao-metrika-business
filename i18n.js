@@ -141,3 +141,16 @@ window.METRIKA_I18N = {
     privacy: "プライバシー", complaints: "苦情受付簿", menu: "メニュー", whatsapp: "WhatsApp", lang: "言語", close: "閉じる",
   },
 };
+
+/* AVISO LEGAL OBRIGATÓRIO (todos os clientes). Couvert: art. 135.º do Decreto-Lei n.º 10/2015, de 16 de janeiro.
+   Lista dos 14 alergénios de declaração obrigatória. Mostrado sempre no rodapé da ementa. */
+window.MK_LEGAL = {
+  pt: ["Nenhum prato, produto alimentar ou bebida, incluindo o couvert, pode ser cobrado se não for solicitado pelo cliente ou por este for inutilizado (art. 135.º do Decreto-Lei n.º 10/2015, de 16 de janeiro).", "Informação sobre alergénios: glúten, crustáceos, ovos, peixes, amendoins, soja, leite/lactose, frutos de casca rija, aipo, mostarda, sementes de sésamo, dióxido de enxofre e sulfitos, tremoço e moluscos."],
+  en: ["No dish, food product or drink, including the cover charge (couvert), may be charged unless requested by the customer or if it is left unused (Art. 135, Decree-Law 10/2015 of 16 January).", "Allergen information: gluten, crustaceans, eggs, fish, peanuts, soy, milk/lactose, tree nuts, celery, mustard, sesame seeds, sulphur dioxide and sulphites, lupin and molluscs."],
+  fr: ["Aucun plat, produit alimentaire ou boisson, y compris le couvert, ne peut être facturé s'il n'a pas été demandé par le client ou s'il est resté inutilisé (art. 135 du décret-loi n° 10/2015 du 16 janvier).", "Information sur les allergènes : gluten, crustacés, œufs, poissons, arachides, soja, lait/lactose, fruits à coque, céleri, moutarde, graines de sésame, anhydride sulfureux et sulfites, lupin et mollusques."],
+  es: ["Ningún plato, producto alimenticio o bebida, incluido el cubierto (couvert), puede cobrarse si no ha sido solicitado por el cliente o si no se ha utilizado (art. 135 del Decreto-Ley 10/2015, de 16 de enero).", "Información sobre alérgenos: gluten, crustáceos, huevos, pescado, cacahuetes, soja, leche/lactosa, frutos de cáscara, apio, mostaza, granos de sésamo, dióxido de azufre y sulfitos, altramuces y moluscos."],
+  de: ["Kein Gericht, Lebensmittel oder Getränk, einschließlich des Gedecks (Couvert), darf berechnet werden, wenn es nicht vom Gast bestellt wurde oder unbenutzt bleibt (Art. 135 Gesetzesdekret Nr. 10/2015 vom 16. Januar).", "Allergeninformation: Gluten, Krebstiere, Eier, Fisch, Erdnüsse, Soja, Milch/Laktose, Schalenfrüchte, Sellerie, Senf, Sesamsamen, Schwefeldioxid und Sulfite, Lupinen und Weichtiere."],
+  it: ["Nessun piatto, prodotto alimentare o bevanda, compreso il coperto (couvert), può essere addebitato se non richiesto dal cliente o se rimasto inutilizzato (art. 135 del Decreto-Legge n. 10/2015 del 16 gennaio).", "Informazioni sugli allergeni: glutine, crostacei, uova, pesce, arachidi, soia, latte/lattosio, frutta a guscio, sedano, senape, semi di sesamo, anidride solforosa e solfiti, lupini e molluschi."],
+  zh: ["任何菜品、食品或饮品（包括餐前小食 couvert），若顾客未点用或未使用，均不得收费（1月16日第10/2015号法令第135条）。", "过敏原信息：麸质、甲壳类、蛋、鱼、花生、大豆、牛奶/乳糖、坚果、芹菜、芥末、芝麻、二氧化硫和亚硫酸盐、羽扇豆、软体动物。"],
+  ja: ["お客様が注文されていない、または手を付けられていない料理・食品・飲み物（クーベルトを含む）は、請求できません（1月16日付法令第10/2015号第135条）。", "アレルゲン情報：グルテン、甲殻類、卵、魚、ピーナッツ、大豆、乳/乳糖、木の実、セロリ、マスタード、ごま、二酸化硫黄・亜硫酸塩、ルピナス、軟体動物。"],
+};
