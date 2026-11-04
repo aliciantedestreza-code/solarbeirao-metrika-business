@@ -31,13 +31,13 @@ window.METRIKA_CONFIG = {
    "zh": "大海的味道，塞图巴尔的灵魂。",
    "ja": "海の味わい、セトゥーバルの魂。"
   },
-  "telefone": "",
+  "telefone": "+351910083526",
   "telemovel": "",
   "email": "",
   "morada": {
    "rua": "Avenida Luísa Todi, 510",
    "local": "Setúbal",
-   "codigoPostal": "",
+   "codigoPostal": "2900-456",
    "cidade": "Setúbal",
    "concelho": "Setúbal",
    "pais": "Portugal"
@@ -51,15 +51,15 @@ window.METRIKA_CONFIG = {
   "confirmado": false
  },
  "horario": {
-  "confirmado": false,
+  "confirmado": true,
   "dias": {
-   "0": [],
+   "0": [["12:00","15:30"]],
    "1": [],
-   "2": [],
-   "3": [],
-   "4": [],
-   "5": [],
-   "6": []
+   "2": [["12:00","22:30"]],
+   "3": [["12:00","22:30"]],
+   "4": [["12:00","22:30"]],
+   "5": [["12:00","22:30"]],
+   "6": [["12:00","22:30"]]
   },
   "reservas": {
    "inicio": "12:00",
@@ -68,7 +68,7 @@ window.METRIKA_CONFIG = {
   }
  },
  "links": {
-  "maps": "https://maps.app.goo.gl/BfQy5i5TMng1k7be8?g_st=ic",
+  "maps": "https://maps.app.goo.gl/51wPSaHdHFiqJoL7A?g_st=ic",
   "mapsEmbed": "https://www.google.com/maps?q=O%20Tavira%20Restaurante%2C%20Avenida%20Lu%C3%ADsa%20Todi%20510%2C%20Set%C3%BAbal&z=17&output=embed",
   "avaliar": "",
   "verAvaliacoes": "",
