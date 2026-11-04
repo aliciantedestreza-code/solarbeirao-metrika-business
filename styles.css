@@ -267,3 +267,4 @@ input[type=date].field{line-height:50px}
 /* O Tavira: a fachada da foto já mostra o nome → sem emblema no hero; áreas de toque 44 px nos contactos */
 .hero-logo{display:none}
 .contacts a{display:inline-block;padding:13px 8px;margin:-13px -8px}
+.contacts a,#bookCall{display:inline-block;padding:13px 8px;margin:-13px -8px}

@@ -47,8 +47,8 @@ window.METRIKA_CONFIG = {
   "precoMedio": ""
  },
  "whatsapp": {
-  "numero": "",
-  "confirmado": false
+  "numero": "+351910083526",
+  "confirmado": true
  },
  "horario": {
   "confirmado": true,
@@ -70,7 +70,7 @@ window.METRIKA_CONFIG = {
  "links": {
   "maps": "https://maps.app.goo.gl/51wPSaHdHFiqJoL7A?g_st=ic",
   "mapsEmbed": "https://www.google.com/maps?q=O%20Tavira%20Restaurante%2C%20Avenida%20Lu%C3%ADsa%20Todi%20510%2C%20Set%C3%BAbal&z=17&output=embed",
-  "avaliar": "",
+  "avaliar": "https://maps.app.goo.gl/51wPSaHdHFiqJoL7A?g_st=ic",
   "verAvaliacoes": "",
   "instagram": "https://www.instagram.com/restaurante_o_tavira/",
   "facebook": "",
