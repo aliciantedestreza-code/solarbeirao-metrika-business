@@ -25,6 +25,7 @@
   function norm(s) { return String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
   function price(p, u) { return esc(new Intl.NumberFormat(LOCALE[lang], { style: "currency", currency: "EUR", minimumFractionDigits: 2 }).format(p)) + (u ? "<small>/" + esc(u) + "</small>" : ""); }
   var ICON = {
+    pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
     cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',
     phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>',
     star: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/></svg>',
@@ -71,9 +72,10 @@
     $("#emFoot").innerHTML = foot.map(esc).join("<br>");
     $("#emEmpty").textContent = t("noResults");
     var D = $("#emDock"); D.innerHTML = "";
-    D.insertAdjacentHTML("beforeend", '<a href="tel:' + esc(C.negocio.telefone) + '">' + ICON.phone + "<span>" + esc(t("call")) + "</span></a>");
+    if (C.negocio.telefone) D.insertAdjacentHTML("beforeend", '<a href="tel:' + esc(C.negocio.telefone) + '">' + ICON.phone + "<span>" + esc(t("call")) + "</span></a>");
+    else if (C.links.maps) D.insertAdjacentHTML("beforeend", '<a href="' + esc(C.links.maps) + '" target="_blank" rel="noopener">' + ICON.pin + "<span>" + esc(t("directions")) + "</span></a>");
     if (C.links.avaliar) D.insertAdjacentHTML("beforeend", '<a href="' + esc(C.links.avaliar) + '" target="_blank" rel="noopener">' + ICON.star + "<span>" + esc(t("rate")) + "</span></a>");
-    D.insertAdjacentHTML("beforeend", '<a class="main" href="' + esc(backHref()) + '#reservas">' + ICON.cal + "<span>" + esc(t("reserve")) + "</span></a>");
+    if (waOk || C.negocio.telemovel || (C.whatsapp && C.whatsapp.numero)) D.insertAdjacentHTML("beforeend", '<a class="main" href="' + esc(backHref()) + '#reservas">' + ICON.cal + "<span>" + esc(t("reserve")) + "</span></a>");
     renderSheet(); filter(); spy();
     var P = $("#reviewPanel");
     if (MODE === "rever") {

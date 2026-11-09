@@ -137,7 +137,7 @@
     var note = h.nota ? '<p class="pro-note">' + esc(pick(h.nota, h.ntr)) + "</p>" : "";
     var alNote = window.MK_ALERG && window.MK_ALERG.geral ? '<p class="pro-pt pro-al">' + esc(window.MK_ALERG.geral[IDX[L]] || window.MK_ALERG.geral[0]) + "</p>" : "";
     var ptNote = missing ? '<p class="pro-pt">' + esc(tr(T.ptNota)) + "</p>" : "";
-    var ctas = onMenu ? "" : '<div class="pro-cta"><a class="btn btn-gold" href="#reservas">' + esc(tr(T.reservar)) + "</a></div>";
+    var ctas = (onMenu || !(C.negocio.telemovel || (C.whatsapp && C.whatsapp.numero))) ? "" : '<div class="pro-cta"><a class="btn btn-gold" href="#reservas">' + esc(tr(T.reservar)) + "</a></div>";
     box.innerHTML = '<div class="wrap"><div class="pro-card">' +
       '<div class="pro-head"><span class="pro-live" aria-hidden="true"></span><span class="pro-kick">' + esc(tr(T.kicker)) + "</span></div>" +
       '<h2 class="pro-title">' + esc(tr(T.hoje).replace('{n}', (C.negocio && C.negocio.nome) || '')) + "</h2>" +

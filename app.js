@@ -78,7 +78,9 @@
   }
   function weekdayName(wd, style) { var d = new Date(2024, 0, 7 + wd); return new Intl.DateTimeFormat(LOCALE[lang], { weekday: style || "long" }).format(d); }
   var waOk = show(C.whatsapp && C.whatsapp.confirmado) && C.whatsapp && C.whatsapp.numero;
-  var hoursOk = show(C.horario.confirmado);
+  function canBook() { return !!(waOk || C.negocio.telemovel || (C.whatsapp && C.whatsapp.numero)); }   /* sem WhatsApp/telemóvel as reservas ficam escondidas */
+  var hasHours = Object.keys(C.horario.dias || {}).some(function (k) { return (C.horario.dias[k] || []).length; });
+  var hoursOk = show(C.horario.confirmado) && hasHours;
   var pricesOk = show(C.ementa.precosConfirmados);
 
   /* ---------- Render ---------- */
@@ -99,7 +101,7 @@
     var acts = [
       ["contacto.vcf", "save", t("save")],
       [waOk ? "https://wa.me/" + digits(C.whatsapp.numero) : "", "wa", t("whatsapp"), true],
-      ["tel:" + N.telefone, "phone", t("call")],
+      [N.telefone ? "tel:" + N.telefone : "", "phone", t("call")],
       [L.maps, "pin", t("directions"), true],
       [L.avaliar, "star", t("rate"), true, "gold"],
       [menuHref(), "menu", t("menu")],
@@ -117,7 +119,7 @@
       if (!L[k]) return; var b = BRAND[k];
       S.appendChild(el("a", { class: "soc", href: L[k], target: "_blank", rel: "noopener" }, '<span class="ico" style="background:' + b[2] + '">' + ICON[b[1]] + "</span>" + b[0]));
     });
-    var sh = el("a", { class: "soc", href: "#", role: "button" }, '<span class="ico" style="background:#7a1f2b">' + ICON.share + "</span>" + esc(t("share")));
+    var sh = el("a", { class: "soc", href: "#", role: "button" }, '<span class="ico" style="background:#5e1726">' + ICON.share + "</span>" + esc(t("share")));
     sh.addEventListener("click", function (e) { e.preventDefault(); doShare(); });
     S.appendChild(sh);
 
@@ -151,7 +153,7 @@
       st.textContent = t("closed") + (next ? " · " + (next.i === 0 ? t("opensAt", { t: next.t }) : t("opensDay", { d: next.i === 1 ? t("tomorrow").toLowerCase() : weekdayName(next.wd), t: next.t })) : "");
       st.className = "status";
     }
-    st.hidden = false;
+    st.hidden = false; st.style.visibility = "";
     if (MODE === "rever" && !C.horario.confirmado) st.classList.add("rv-mark");
   }
 
@@ -273,12 +275,22 @@
   function slotsFor(key) {
     var r = C.horario.reservas, out = [], a = hm(r.inicio), b = hm(r.fim), step = r.passoMin || 30;
     var todayKey = dateKey(new Date()), now = lisbonNow().min;
-    for (var m = a; m <= b; m += step) { if (key === todayKey && m < now + 30) continue; out.push(fmtT(m)); }
+    /* só horas em que a casa está aberta nesse dia (turnos do horário), até X min antes de fechar */
+    var wd = new Date(key + "T12:00:00").getDay(), turns = (C.horario.dias || {})[wd] || [], before = r.antesDeFecharMin != null ? r.antesDeFecharMin : 0;
+    var useTurns = hasHours;
+    for (var m = a; m <= b; m += step) {
+      if (key === todayKey && m < now + 30) continue;
+      if (useTurns && !turns.some(function (x) { var s = hm(x[0]), e = hm(x[1]); if (e <= s) e += 1440; return m >= s && m <= e - before; })) continue;
+      out.push(fmtT(m));
+    }
     return out;
   }
   function bookDay() { var d = new Date(); if (book.mode === "today") return dateKey(d); if (book.mode === "tomorrow") return dateKey(new Date(Date.now() + 864e5)); return book.other || null; }
   function renderBooking() {
     var seg = $("#daySeg"), di = $("#dayInput");
+    $("#reservas").hidden = !canBook();
+    document.querySelectorAll('a[href="#reservas"]').forEach(function (a) { a.hidden = !canBook(); });
+    if (!canBook()) { pending.push("telefone / WhatsApp (reservas desligadas até haver contacto)"); return; }
     if (!book.mode) book.mode = slotsFor(dateKey(new Date())).length ? "today" : "tomorrow";
     seg.innerHTML = "";
     [["today", "today"], ["tomorrow", "tomorrow"], ["other", "otherDay"]].forEach(function (o) {
@@ -295,7 +307,7 @@
     $("#pplMinus").onclick = function () { book.ppl = Math.max(1, book.ppl - 1); $("#ppl").textContent = book.ppl; };
     $("#pplPlus").onclick = function () { book.ppl = Math.min(20, book.ppl + 1); $("#ppl").textContent = book.ppl >= 20 ? "20+" : book.ppl; };
     var btn = $("#bookSend"); btn.innerHTML = (waOk ? ICON.wa + esc(t("sendWA")) : ICON.sms + esc(t("sendSMS")));
-    var call = $("#bookCall"); call.href = "tel:" + C.negocio.telefone; call.textContent = prettyTel(C.negocio.telefone);
+    var call = $("#bookCall"); if (C.negocio.telefone) { call.href = "tel:" + C.negocio.telefone; call.textContent = prettyTel(C.negocio.telefone); } else call.hidden = true;
     $("#book").onsubmit = sendBooking;
     if (C.whatsapp && !C.whatsapp.confirmado) mark(MODE === "rever" ? $("#book") : null, false, "WhatsApp do " + prettyTel(C.whatsapp.numero) + " (sem WhatsApp → SMS)");
   }
@@ -330,7 +342,7 @@
   function renderVisit() {
     var N = C.negocio, M = N.morada, L = C.links;
     $("#visitTitle").textContent = t("visitTitle");
-    $("#addr").textContent = [M.rua, M.local, M.codigoPostal + " " + M.cidade].filter(Boolean).join(" · ");
+    $("#addr").textContent = [M.rua, M.local, [M.codigoPostal, M.cidade].filter(Boolean).join(" ")].filter(function (x, i, a) { return x && a.indexOf(x) === i; }).filter(Boolean).join(" · ");
     var map = $("#map"); if (L.mapsEmbed && map.getAttribute("src") !== L.mapsEmbed) map.src = L.mapsEmbed;
     if (!L.mapsEmbed) map.parentNode.hidden = true;
     var H = $("#hours"); H.innerHTML = "";
@@ -342,25 +354,26 @@
     $("#hoursCard").hidden = !hoursOk;
     if (!C.horario.confirmado) mark(MODE === "rever" ? $("#hoursCard") : null, false, "horário (tirado da ficha Google)");
     var CT = $("#contacts"); CT.innerHTML = "";
-    [[N.telefone, "tel:" + N.telefone, prettyTel(N.telefone)], [N.telemovel, "tel:" + N.telemovel, prettyTel(N.telemovel)], [waOk, waOk ? "https://wa.me/" + digits(C.whatsapp.numero) : "", "WhatsApp"], [N.email, "mailto:" + N.email, N.email]]
-      .forEach(function (c) { if (c[0]) CT.appendChild(el("li", null, '<a href="' + esc(c[1]) + '"' + (c[2] === "WhatsApp" ? ' target="_blank" rel="noopener"' : "") + ">" + esc(c[2]) + "</a>")); });
+    [[N.telefone, "tel:" + N.telefone, prettyTel(N.telefone)], [N.telemovel, "tel:" + N.telemovel, prettyTel(N.telemovel)], [waOk, waOk ? "https://wa.me/" + digits(C.whatsapp.numero) : "", "WhatsApp"], [N.email, "mailto:" + N.email, N.email], [L.instagram, L.instagram, "Instagram"], [L.tripadvisor, L.tripadvisor, "Tripadvisor"]]
+      .forEach(function (c) { if (c[0]) CT.appendChild(el("li", null, '<a href="' + esc(c[1]) + '"' + (/^(WhatsApp|Instagram|Tripadvisor)$/.test(c[2]) ? ' target="_blank" rel="noopener"' : "") + ">" + esc(c[2]) + "</a>")); });
   }
 
   function renderFooter() {
     var L = C.links, N = C.negocio, F = $("#footSocial"); F.innerHTML = "";
     ["instagram", "facebook", "tripadvisor"].forEach(function (k) { if (L[k]) F.appendChild(el("a", { href: L[k], target: "_blank", rel: "noopener", "aria-label": BRAND[k][0] }, ICON[BRAND[k][1]])); });
     $("#lrLink").href = L.livroReclamacoes || "https://www.livroreclamacoes.pt/inicio";
-    $("#footLegal").textContent = [N.razaoSocial || N.nomeCompleto, N.nif ? "NIF " + N.nif : "", N.morada.rua + ", " + N.morada.codigoPostal + " " + N.morada.cidade].filter(Boolean).join(" · ");
+    $("#footLegal").textContent = [N.razaoSocial || N.nomeCompleto, N.nif ? "NIF " + N.nif : "", N.morada.rua + ", " + [N.morada.codigoPostal, N.morada.cidade].filter(Boolean).join(" ")].filter(Boolean).join(" · ");
     if (!N.nif) pending.push("NIF (rodapé e Política de Privacidade)");
     $("#credit").textContent = C.credito || "";
   }
 
   function renderDock() {
     var D = $("#dock"); D.innerHTML = "";
-    D.appendChild(el("a", { href: "tel:" + C.negocio.telefone }, ICON.phone + "<span>" + esc(t("call")) + "</span>"));
+    if (C.negocio.telefone) D.appendChild(el("a", { href: "tel:" + C.negocio.telefone }, ICON.phone + "<span>" + esc(t("call")) + "</span>"));
+    else if (C.links.maps) D.appendChild(el("a", { href: C.links.maps, target: "_blank", rel: "noopener" }, ICON.pin + "<span>" + esc(t("directions")) + "</span>"));
     if (waOk) D.appendChild(el("a", { href: "https://wa.me/" + digits(C.whatsapp.numero), target: "_blank", rel: "noopener" }, ICON.wa + "<span>WhatsApp</span>"));
     else D.appendChild(el("a", { href: menuHref() }, ICON.menu + "<span>" + esc(t("menu")) + "</span>"));
-    D.appendChild(el("a", { href: "#reservas", class: "main" }, ICON.cal + "<span>" + esc(t("reserve")) + "</span>"));
+    if (canBook()) D.appendChild(el("a", { href: "#reservas", class: "main" }, ICON.cal + "<span>" + esc(t("reserve")) + "</span>"));
   }
 
   function menuHref() { var q = new URLSearchParams(); q.set("lang", lang); if (MODE !== (C.modo || "normal")) q.set(MODE, "1"); return "ementa.html?" + q.toString(); }

@@ -1,21 +1,17 @@
-/* MÉTRIKA ID · Solar Beirão · Grupos da ementa
-   Junta as secções em ≤10 cartões (Vinhos → Sangrias, Verdes, Brancos, Tintos…). Não mexe nos dados nem no motor:
+/* MÉTRIKA ID · Solar do Marquês · Grupos da ementa
+   Junta as secções em ≤10 cartões. Não mexe nos dados nem no motor:
    reorganiza o que o motor desenhou, em todas as línguas, e volta a fazê-lo sempre que ele redesenha. */
 (function () {
   "use strict";
   var IDX = { pt: 0, en: 1, fr: 2, es: 3, de: 4, it: 5, zh: 6, ja: 7 };
   /* Um grupo com "n" e mais de uma secção vira um cartão que abre e mostra as secções lá dentro. */
   var G = [
-    { id: "especialidades", c: ["especialidades"] },
-    { id: "marisco", c: ["marisco"] },
+    { id: "entradas", c: ["entradas"] },
+    { id: "saladas", c: ["saladas"] },
+    { id: "omeletes", c: ["omeletes"] },
     { id: "peixe", c: ["peixe"] },
-    { id: "carne", c: ["carne"] },
-    { id: "petiscos", n: ["Petiscos e entradas", "Petiscos & starters", "Petiscos et entrées", "Petiscos y entrantes", "Petiscos & Vorspeisen", "Petiscos e antipasti", "葡式小吃与前菜", "ペティスコスと前菜"], c: ["petiscos", "entradas"] },
-    { id: "rapidos", n: ["Omeletes, pregos e acompanhamentos", "Omelettes, steak rolls & sides", "Omelettes, pregos et accompagnements", "Tortillas, pregos y guarniciones", "Omeletts, Pregos & Beilagen", "Omelette, pregos e contorni", "煎蛋卷、牛排包与配菜", "オムレツ・プレゴ・付け合わせ"], c: ["omeletes", "acompanhamentos"] },
-    { id: "sobremesas", c: ["sobremesas"] },
-    { id: "vinhos", n: ["Carta de vinhos", "Wine list", "Carte des vins", "Carta de vinos", "Weinkarte", "Carta dei vini", "酒单", "ワインリスト"], c: ["verdes", "brancos", "tintos", "roses", "espumantes", "sangrias", "pressao"] },
-    { id: "bebidas", n: ["Bebidas e cafetaria", "Drinks & coffee", "Boissons et café", "Bebidas y cafetería", "Getränke & Kaffee", "Bevande e caffetteria", "饮品与咖啡", "ドリンク・カフェ"], c: ["aguas", "cervejas", "cafetaria"] },
-    { id: "digestivos", n: ["Aperitivos, licores e digestivos", "Aperitifs, liqueurs & digestifs", "Apéritifs, liqueurs et digestifs", "Aperitivos, licores y digestivos", "Aperitifs, Liköre & Digestifs", "Aperitivi, liquori e digestivi", "开胃酒、利口酒与餐后酒", "食前酒・リキュール・食後酒"], c: ["aperitivos", "licores", "destilados", "aguardentes", "whisky"] }
+    { id: "tacho", c: ["tacho"] },
+    { id: "carnes", c: ["carnes"] }
   ];
   var OWNER = {};
   G.forEach(function (g) { g.c.forEach(function (id) { OWNER[id] = g; }); });
@@ -29,12 +25,12 @@
   var css = document.createElement("style");
   css.textContent =
     ".grp-body{padding:0 10px 10px}" +
-    ".grp .cat{background:var(--sand,#f8f4ee);border-radius:12px;margin:0 0 8px}" +
+    ".grp .cat{background:var(--sand,#faf6ef);border-radius:12px;margin:0 0 8px}" +
     ".grp .cat:last-child{margin-bottom:0}" +
     ".grp .cat>summary{font:500 17px var(--serif);padding:13px 14px}" +
     ".grp .dishes{padding:0 14px 8px}" +
-    ".grp .dish{border-top-color:var(--line,#e8dfd6)}" +
-    ".em-grp{margin:0 0 6px;padding:0 4px;font:700 12px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--gold-d,#9c7434)}" +
+    ".grp .dish{border-top-color:var(--line,#e3d8d2)}" +
+    ".em-grp{margin:0 0 6px;padding:0 4px;font:700 12px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--gold-d,#8f5a2b)}" +
     /* áreas de toque de 44 px nos links pequenos do rodapé, sem mexer no desenho */
     ".foot-links a,li a[href^=\"tel:\"]{display:inline-block;padding:13px 8px;margin:-13px -8px}";
   document.head.appendChild(css);
