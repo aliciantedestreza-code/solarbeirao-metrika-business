@@ -135,12 +135,13 @@ window.METRIKA_CONFIG = {
   "bolt": ""
  },
  "fotos": {
-  "hero": "espaco-esplanada",
+  "hero": "espaco-esplanada-v2",
   "espaco": [
-   "espaco-esplanada",
-   "espaco-sala-logotipo",
-   "espaco-sala",
-   "espaco-balcao"
+   "espaco-esplanada-v2",
+   "espaco-sala-logotipo-v2",
+   "espaco-balcao-v2",
+   "espaco-sala-v2",
+   "espaco-sala-contemporanea-v2"
   ],
   "comida": [
    "comida-sardinhas",
