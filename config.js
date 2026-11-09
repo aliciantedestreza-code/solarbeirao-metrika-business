@@ -144,14 +144,15 @@ window.METRIKA_CONFIG = {
    "espaco-sala-contemporanea-v2"
   ],
   "comida": [
-   "comida-sardinhas",
-   "comida-peixe-grelhado",
-   "comida-choco-frito",
-   "comida-ameijoas",
-   "comida-camarao",
-   "comida-bife",
-   "comida-marisco-tomate",
-   "comida-mariscada"
+   "comida-peixe-grelhado-v2",
+   "comida-sardinhas-v2",
+   "comida-camarao-alhinho-v2",
+   "comida-lulas-v2",
+   "comida-polvo-v2",
+   "comida-camarao-grelhado-v2",
+   "comida-bife-v2",
+   "comida-marisco-tomate-v2",
+   "comida-mariscada-v2"
   ]
  },
  "avaliacoes": {

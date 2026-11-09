@@ -271,3 +271,5 @@ input[type=date].field{line-height:50px}
 .hero-in::before{content:"";display:block;height:54px;margin-bottom:16px}
 .hero-in:has(.pro-switch)::before{display:none}
 .skip{min-height:44px;display:inline-flex;align-items:center}
+/* Solar do Marquês: fotos de comida quadradas (mistura de fotos verticais e horizontais) */
+.rail-food img{aspect-ratio:1/1}
