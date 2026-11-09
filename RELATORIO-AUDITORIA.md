@@ -13,7 +13,7 @@ Publicado: https://solar-do-marques-metrika.vercel.app (Vercel metrik, projeto `
 ## O que foi feito
 - Reconstruído sobre o motor aprovado (Solar Beirão / O Tavira): ID + Business no mesmo link, 8 línguas, aviso legal, alergénios validados pelo dono, tradução automática dos pratos novos.
 - Ementa: 60 artigos em 6 cartões, transcrita das 8 fotos da carta física, preços da carta (por confirmar), kg e doses separados, linguado sem preço.
-- Fotos de espaço: 5 versões tratadas enviadas pelo João a 09/11 (pedido expresso; parecem tratadas com IA, pedir originais). Comida: 8 originais com tratamento conservador; badge do Google cortado.
+- Fotos de espaço: 5 versões tratadas enviadas pelo João a 09/11 (pedido expresso; parecem tratadas com IA, pedir originais). Comida: 9 fotos enviadas pelo João a 09/11 (pedido expresso; várias tratadas com IA).
 - Logótipo provisório: símbolo do peixe vetorizado da parede + tipografia.
 - Reservas: só horas em que a casa está aberta (terça sem horas; 11:00–15:00 / 19:00–23:00).
 - Business: slug `solar-do-marques-setubal` criado (bcrypt), password inicial entregue ao João.
