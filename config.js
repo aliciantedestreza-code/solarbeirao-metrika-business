@@ -7,7 +7,7 @@
    ===================================================================== */
 window.METRIKA_CONFIG = {
  "modo": "demo",
- "url": "https://solar-do-marques-setubal.vercel.app",
+ "url": "https://solar-do-marques-metrika.vercel.app",
  "negocio": {
   "nome": "Solar do Marquês",
   "nomeCompleto": "Solar do Marquês",
